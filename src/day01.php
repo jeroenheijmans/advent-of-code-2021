@@ -2016,7 +2016,13 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  return -1;
+  $answer = 0;
+  for ($i = 0; $i < count($data) - 3; $i++) {
+    $x = $data[$i+0] + $data[$i+1] + $data[$i+2];
+    $y = $data[$i+1] + $data[$i+2] + $data[$i+3];
+    if ($y > $x) $answer++;
+  }
+  return $answer;
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
