@@ -10,8 +10,8 @@ Simply `php day01.php` and so forth should do the trick!
 
 Some learned lesson for each day:
 
-1. TODO
-2. TODO
+1. Rushing first requires cleanup later.
+2. Many modern languages are very similar.
 3. TODO
 4. TODO
 5. TODO
