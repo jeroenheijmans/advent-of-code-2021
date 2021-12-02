@@ -1026,10 +1026,25 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  $answer = 0;
-  for ($i = 0; $i < count($data) - 3; $i++) {
+  $x = 0;
+  $y = 0;
+  $aim = 0;
+  foreach ($data as $row) {
+    $parts = preg_split("/ /", $row);
+    switch ($parts[0]) {
+      case "forward":
+        $x += intval($parts[1]);
+        $y += $aim * intval($parts[1]);
+        break;
+      case "down":
+        $aim += intval($parts[1]);
+        break;
+      case "up":
+        $aim -= intval($parts[1]);
+        break;
+    }
   }
-  return $answer;
+  return $x * $y;
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
