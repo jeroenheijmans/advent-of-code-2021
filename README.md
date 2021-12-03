@@ -12,7 +12,7 @@ Some learned lesson for each day:
 
 1. Rushing first requires cleanup later.
 2. Many modern languages are very similar.
-3. TODO
+3. Bitwise operators require refresher courses.
 4. TODO
 5. TODO
 6. TODO
