@@ -1021,11 +1021,33 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  $answer = -1;
-  foreach ($data as $row) {
-    $parts = preg_split("/ /", $row);
+  $considered = $data;
+  for ($i = 0; $i < strlen($data[0]); $i++) {
+    $ones = 0;
+    $zeros = 0;
+    foreach ($considered as $row) {
+      substr($row, $i, 1) === "1" ? $ones++ : $zeros++;
+    }
+    $myBit = $ones >= $zeros ? "1" : "0";
+    $considered = array_filter($considered, function($x) use($myBit, $i) { return substr($x, $i, 1) === $myBit; });
+    if (count($considered) === 1) break;
   }
-  return $answer;
+  $oxygen = bindec(current($considered));
+  
+  $considered = $data;
+  for ($i = 0; $i < strlen($data[0]); $i++) {
+    $ones = 0;
+    $zeros = 0;
+    foreach ($considered as $row) {
+      substr($row, $i, 1) === "1" ? $ones++ : $zeros++;
+    }
+    $myBit = $ones < $zeros ? "1" : "0";
+    $considered = array_filter($considered, function($x) use($myBit, $i) { return substr($x, $i, 1) === $myBit; });
+    if (count($considered) === 1) break;
+  }
+  $scrubber = bindec(current($considered));
+  
+  return $oxygen * $scrubber;
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
