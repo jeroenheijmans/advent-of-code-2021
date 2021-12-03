@@ -1029,7 +1029,8 @@ function solvePart2($data) {
       substr($row, $i, 1) === "1" ? $ones++ : $zeros++;
     }
     $myBit = $ones >= $zeros ? "1" : "0";
-    $considered = array_filter($considered, function($x) use($myBit, $i) { return substr($x, $i, 1) === $myBit; });
+    $considered = array_filter($considered, fn($x) => substr($x, $i, 1) === $myBit);
+    $considered = array_filter($considered, fn($x) => substr($x, $i, 1) === $myBit);
     if (count($considered) === 1) break;
   }
   $oxygen = bindec(current($considered));
@@ -1042,7 +1043,7 @@ function solvePart2($data) {
       substr($row, $i, 1) === "1" ? $ones++ : $zeros++;
     }
     $myBit = $ones < $zeros ? "1" : "0";
-    $considered = array_filter($considered, function($x) use($myBit, $i) { return substr($x, $i, 1) === $myBit; });
+    $considered = array_filter($considered, fn($x) => substr($x, $i, 1) === $myBit);
     if (count($considered) === 1) break;
   }
   $scrubber = bindec(current($considered));
