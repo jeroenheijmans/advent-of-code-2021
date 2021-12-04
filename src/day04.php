@@ -606,7 +606,17 @@ $input = "
 
 $data = trim($input);
 
-function findWinner($cards) {
+$game = preg_split("/\r?\n/", $data)[0];
+$game = explode(",", $game);
+
+$cards = trim(preg_split("/^.+\r?\n/", $data)[1]);
+$cards = preg_split("/\r?\n\r?\n/", $cards);
+$cards = array_map(fn ($card) =>
+  array_map(fn ($row) => preg_split("/\s+/", trim($row)), preg_split("/\r?\n/", $card)),
+  $cards
+);
+
+function findWinner($cards, $getIndexInstead = false) {
   for ($i = 0; $i < count($cards); $i++) {
     for ($r = 0; $r < 5; $r++) {
       $isWinner = true;
@@ -616,8 +626,8 @@ function findWinner($cards) {
         break;
       }
       if ($isWinner) {
-        echo "Found a winner by row on card $i at row $r\n";
-        return $cards[$i];
+        // echo "Found a winner by row on card $i at row $r\n";
+        return $getIndexInstead ? $i : $cards[$i];
       }
     }
   }
@@ -631,8 +641,8 @@ function findWinner($cards) {
         break;
       }
       if ($isWinner) {
-        echo "Found a winner by column on card $i at row $r\n";
-        return $cards[$i];
+        // echo "Found a winner by column on card $i at row $r\n";
+        return $getIndexInstead ? $i : $cards[$i];
       }
     }
   }
@@ -650,18 +660,19 @@ function printCard($card) {
   echo "\n";
 }
 
-function solvePart1($data) {
-  $game = preg_split("/\r?\n/", $data)[0];
-  $game = explode(",", $game);
+function getScore($winner, $nr) {
+  $score = 0;
+  foreach ($winner as $row) {
+    foreach ($row as $cell) {
+      if ($cell === "x") continue;
+      $score += intval($cell);
+    }
+  }
+  $score *= $nr;
+  return $score;
+}
 
-  $cards = trim(preg_split("/^.+\r?\n/", $data)[1]);
-  $cards = preg_split("/\r?\n\r?\n/", $cards);
-  $cards = array_map(fn ($card) =>
-    array_map(fn ($row) => preg_split("/\s+/", trim($row)), preg_split("/\r?\n/", $card)),
-    $cards
-  );
-  printCard($cards[0]);
-
+function solvePart1($game, $cards) {
   foreach ($game as $nr) {
     for ($i = 0; $i < count($cards); $i++) {
       for ($r = 0; $r < 5; $r++) {
@@ -675,28 +686,45 @@ function solvePart1($data) {
 
     $winner = findWinner($cards);
     if ($winner !== null) {
-      echo "Winning card after checking nr $nr!!\n\n";
-      printCard($winner);
-      echo "\n\n";
-      $score = 0;
-      foreach ($winner as $row) {
-        foreach ($row as $cell) {
-          if ($cell === "x") continue;
-          $score += intval($cell);
-        }
-      }
-      $score *= $nr;
-      return $score;
+      // echo "Winning card after checking nr $nr!!\n\n";
+      // printCard($winner);
+      // echo "\n\n";
+      return getScore($winner, $nr);
     }
   }
 
   return -1;
 }
 
-function solvePart2($data) {
-  $answer = -1;
-  return $answer;
+function solvePart2($game, $cards) {
+  foreach ($game as $nr) {
+    for ($i = 0; $i < count($cards); $i++) {
+      for ($r = 0; $r < 5; $r++) {
+        for ($c = 0; $c < 5; $c++) {
+          if ($cards[$i][$r][$c] === $nr) {
+            $cards[$i][$r][$c] = "x";
+          }
+        }
+      }
+    }
+
+    $winnerIndex = findWinner($cards, true);
+    while ($winnerIndex !== null) {
+      echo "Found winner at $winnerIndex after nr $nr\n";
+
+      if (count($cards) <= 1) return getScore($cards[$winnerIndex], $nr);
+      
+      array_splice($cards, $winnerIndex, 1);
+      // echo "Remaining cards:\n\n";
+      // foreach ($cards as $ca) printCard($ca);
+      $winnerIndex = findWinner($cards, true);
+    }
+
+    echo "-- After $nr there are " . count($cards) . " remaining\n";
+  }
+
+  return -1;
 }
 
-echo "Solution 1: " . solvePart1($data) . "\n";
-echo "Solution 2: " . solvePart2($data) . "\n";
+echo "Solution 1: " . solvePart1($game, $cards) . "\n";
+echo "Solution 2: " . solvePart2($game, $cards) . "\n";
