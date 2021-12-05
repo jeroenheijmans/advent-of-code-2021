@@ -14,7 +14,7 @@ Some learned lesson for each day:
 2. Many modern languages are very similar.
 3. Bitwise operators require refresher courses.
 4. Mutability can blindside you.
-5. TODO
+5. Learning a language as you go makes you slow.
 6. TODO
 7. TODO
 8. TODO
