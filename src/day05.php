@@ -560,6 +560,54 @@ function solvePart1($data) {
 
 function solvePart2($data) {
   $answer = 0;
+  $grid = array();
+
+  foreach ($data as $line) {
+    $parts = explode(" -> ", $line);
+    $from = $parts[0];
+    $to = $parts[1];
+    $fromx = intval(explode(",", $from)[0]);
+    $fromy = intval(explode(",", $from)[1]);
+    $tox = intval(explode(",", $to)[0]);
+    $toy = intval(explode(",", $to)[1]);
+
+    if (true /* diagonal too now! otherwise copypaste part 1 */) {
+      $x = $fromx;
+      $y = $fromy;
+      $cap = 0;
+      $oneLastRun = 0;
+      
+      while ($oneLastRun <= 1) {
+        if (!array_key_exists("$x,$y", $grid)) {
+          $grid["$x,$y"] = 0;
+        }
+
+        if ($grid["$x,$y"] === 1) {
+          // echo "overlap at $x,$y while checking $fromx,$fromy -> $tox,$toy\n";
+          $answer++;
+        }
+
+        $grid["$x,$y"] = $grid["$x,$y"] + 1;
+
+        if ($fromx > $tox) $x--;
+        if ($fromx < $tox) $x++;
+        if ($fromy > $toy) $y--;
+        if ($fromy < $toy) $y++;
+
+        if ($cap++ > 1000) {
+          throw new Error("Went over 1000 iterations for line $from -> $to ending at $x,$y");
+        }
+
+        if ($oneLastRun > 0) {
+          $oneLastRun++;
+        }
+        if ($x === $tox && $y === $toy) {
+          $oneLastRun++;
+        }
+      }
+    }
+  }
+
   return $answer;
 }
 
