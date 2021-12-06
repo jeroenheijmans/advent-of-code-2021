@@ -26,7 +26,53 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  return -1;
+  $lifetimes = Array(
+    0 => 0,
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+  );
+
+  for ($x = 0; $x < count($data); $x++) {
+    $lifetimes[$data[$x]]++;
+  }
+
+  for ($i = 0; $i < 256; $i++) {
+    // echo "Day $i\n";
+    // print_r($lifetimes);
+
+    $newdata = Array(
+      0 => 0,
+      1 => 0,
+      2 => 0,
+      3 => 0,
+      4 => 0,
+      5 => 0,
+      6 => 0,
+      7 => 0,
+      8 => 0,
+    );
+
+    for ($d = 0; $d < 9; $d++) {
+      $fish = $lifetimes[$d];
+
+      if ($d === 0) {
+        $newdata[6] = $fish;
+        $newdata[8] = $fish;
+      } else {
+        $newdata[$d - 1] += $fish;
+      }
+    }
+
+    $lifetimes = $newdata;
+  }
+
+  return array_sum(array_values($lifetimes));
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
