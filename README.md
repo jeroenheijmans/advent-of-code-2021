@@ -16,7 +16,7 @@ Some learned lesson for each day:
 4. Mutability can blindside you.
 5. Learning a language as you go makes you slow.
 6. Functional(ish) syntax would be very nice!
-7. TODO
+7. Math _can_ be intuitive.
 8. TODO
 9. TODO
 10. TODO
