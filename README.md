@@ -17,7 +17,7 @@ Some learned lesson for each day:
 5. Learning a language as you go makes you slow.
 6. Functional(ish) syntax would be very nice!
 7. Math _can_ be intuitive.
-8. TODO
+8. **Wisdom lies with the crowd.** I am not wise.
 9. TODO
 10. TODO
 11. TODO
