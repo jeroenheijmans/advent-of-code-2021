@@ -1,7 +1,7 @@
 <?php
 
 $input = "
-be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
+acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
 ";
 
 $data = array_map(
@@ -26,172 +26,10 @@ function solvePart1($data) {
   return $answer;
 }
 
-function canBeDigit($i, $digit, $mappings) {
-  $parts = str_split($digit);
-  if ($i === 8) {
-    return strlen($digit) === 7;
-  }
-  if ($i === 7) {
-    return strlen($digit) === 3;
-  }
-  if ($i === 4) {
-    return strlen($digit) === 4;
-  }
-  if ($i === 1) {
-    return strlen($digit) === 2;
-  }
-  if ($i === 0) {
-    return
-      strlen($digit) === 6 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["b"], $parts[1]) &&
-      str_contains($mappings["c"], $parts[2]) &&
-      str_contains($mappings["e"], $parts[3]) &&
-      str_contains($mappings["f"], $parts[4]) &&
-      str_contains($mappings["g"], $parts[5]) &&
-      true;
-  }
-  if ($i === 6) {
-    return
-      strlen($digit) === 6 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["b"], $parts[1]) &&
-      str_contains($mappings["d"], $parts[2]) &&
-      str_contains($mappings["e"], $parts[3]) &&
-      str_contains($mappings["f"], $parts[4]) &&
-      str_contains($mappings["g"], $parts[5]) &&
-      true;
-  }
-  if ($i === 9) {
-    return
-      strlen($digit) === 6 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["b"], $parts[1]) &&
-      str_contains($mappings["c"], $parts[2]) &&
-      str_contains($mappings["d"], $parts[3]) &&
-      str_contains($mappings["f"], $parts[4]) &&
-      str_contains($mappings["g"], $parts[5]) &&
-      true;
-  }
-  if ($i === 2) {
-    return
-      strlen($digit) === 5 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["c"], $parts[1]) &&
-      str_contains($mappings["d"], $parts[2]) &&
-      str_contains($mappings["e"], $parts[3]) &&
-      str_contains($mappings["g"], $parts[4]) &&
-      true;
-  }
-  if ($i === 3) {
-    return
-      strlen($digit) === 5 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["c"], $parts[1]) &&
-      str_contains($mappings["d"], $parts[2]) &&
-      str_contains($mappings["f"], $parts[3]) &&
-      str_contains($mappings["g"], $parts[4]) &&
-      true;
-  }
-  if ($i === 5) {
-    return
-      strlen($digit) === 5 &&
-      str_contains($mappings["a"], $parts[0]) &&
-      str_contains($mappings["b"], $parts[1]) &&
-      str_contains($mappings["d"], $parts[2]) &&
-      str_contains($mappings["f"], $parts[3]) &&
-      str_contains($mappings["g"], $parts[4]) &&
-      true;
-  }
-
-  return null;
-}
-
-function reduceMappings($mappings, $i, $digit) {
-  $parts = str_split($digit);
-  if ($i === 0) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    // $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 1) {
-    // $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    // $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    // $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    // $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    // $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 3) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    // $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    // $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 4) {
-    // $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    // $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 5) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    // $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    // $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 6) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    // $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  
-  if ($i === 7) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    // $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    // $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    // $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    // $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 8) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  if ($i === 9) {
-    $mappings["a"] = implode(array_intersect(str_split($mappings["a"]), $parts));
-    $mappings["b"] = implode(array_intersect(str_split($mappings["b"]), $parts));
-    $mappings["c"] = implode(array_intersect(str_split($mappings["c"]), $parts));
-    $mappings["d"] = implode(array_intersect(str_split($mappings["d"]), $parts));
-    // $mappings["e"] = implode(array_intersect(str_split($mappings["e"]), $parts));
-    $mappings["f"] = implode(array_intersect(str_split($mappings["f"]), $parts));
-    $mappings["g"] = implode(array_intersect(str_split($mappings["g"]), $parts));
-  }
-  return $mappings;
+function sortedchars($text) {
+  $result = str_split($text);
+  sort($result);
+  return $result;
 }
 
 function solvePart2($data) {
@@ -199,40 +37,84 @@ function solvePart2($data) {
 
   foreach ($data as $row) {
     $mappings = [
-      "a" => "abcdefg",
-      "b" => "abcdefg",
-      "c" => "abcdefg",
-      "d" => "abcdefg",
-      "e" => "abcdefg",
-      "f" => "abcdefg",
-      "g" => "abcdefg",
+      "a" => str_split("abcdefg"),
+      "b" => str_split("abcdefg"),
+      "c" => str_split("abcdefg"),
+      "d" => str_split("abcdefg"),
+      "e" => str_split("abcdefg"),
+      "f" => str_split("abcdefg"),
+      "g" => str_split("abcdefg"),
     ];
-    $todecode = $row[1];
+    
+    $signals = 
+      array_map(
+        fn ($x) => sortedchars($x),
+        array_unique(
+          array_merge($row[0], $row[1])
+        ),
+    );
+
+    $theSeven = current(array_filter($signals, fn ($s) => count($s) === 3));
+    
     $loopstop = 0;
 
-    while ($loopstop++ < 1000 && !empty($todecode)) {
-      // Let's limit our options by doing the easy ones:
-      foreach ($todecode as $digit) {
-        $options = [];
-        foreach ([0,1,2,3,4,5,6,7,8,9] as $n) {
-          // echo "checking $digit can be $n\n";
-          if (canBeDigit($n, $digit, $mappings)) {
-            array_push($options, $n);
+    while ($loopstop++ < 1) {
+      foreach ($signals as $signal) {
+
+        if (count($signal) === 2) {
+          $mappings["a"] = array_diff($mappings["a"], $signal);
+          $mappings["b"] = array_diff($mappings["b"], $signal);
+          $mappings["c"] = array_intersect($mappings["c"], $signal);
+          $mappings["d"] = array_diff($mappings["d"], $signal);
+          $mappings["e"] = array_diff($mappings["e"], $signal);
+          $mappings["f"] = array_intersect($mappings["f"], $signal);
+          $mappings["g"] = array_diff($mappings["g"], $signal);
+        }
+
+        if (count($signal) === 3) {
+          $mappings["a"] = array_intersect($mappings["a"], $signal);
+          $mappings["b"] = array_diff($mappings["b"], $signal);
+          $mappings["c"] = array_intersect($mappings["c"], $signal);
+          $mappings["d"] = array_diff($mappings["d"], $signal);
+          $mappings["e"] = array_diff($mappings["e"], $signal);
+          $mappings["f"] = array_intersect($mappings["f"], $signal);
+          $mappings["g"] = array_diff($mappings["g"], $signal);
+        }
+
+        if (count($signal) === 4) {
+          $mappings["a"] = array_diff($mappings["a"], $signal);
+          $mappings["b"] = array_intersect($mappings["b"], $signal);
+          $mappings["c"] = array_intersect($mappings["c"], $signal);
+          $mappings["d"] = array_intersect($mappings["d"], $signal);
+          $mappings["e"] = array_diff($mappings["e"], $signal);
+          $mappings["f"] = array_intersect($mappings["f"], $signal);
+          $mappings["g"] = array_diff($mappings["g"], $signal);
+        }
+
+        if (count($signal) === 5) {
+          // Look for the 3, which overlaps with 7 completely
+          if (count(array_intersect($theSeven, $signal)) === 3) {
+            $d_and_g = array_diff($signal, $theSeven);
+            $mappings["d"] = array_intersect($mappings["d"], $d_and_g);
+            $mappings["g"] = array_intersect($mappings["g"], $d_and_g);
           }
         }
-        echo "$digit can be: " . implode(",", $options) . "\n";
-        
-        if (count($options) === 1) {
-          $mappings = reduceMappings($mappings, $options[0], $digit);
+
+        foreach ($mappings as $key => $value) {
+          if (count($value) === 1) {
+            if ($key !== "a") $mappings["a"] = array_diff($mappings["a"], $value);
+            if ($key !== "b") $mappings["b"] = array_diff($mappings["b"], $value);
+            if ($key !== "c") $mappings["c"] = array_diff($mappings["c"], $value);
+            if ($key !== "d") $mappings["d"] = array_diff($mappings["d"], $value);
+            if ($key !== "e") $mappings["e"] = array_diff($mappings["e"], $value);
+            if ($key !== "f") $mappings["f"] = array_diff($mappings["f"], $value);
+            if ($key !== "g") $mappings["g"] = array_diff($mappings["g"], $value);
+          }
         }
-        if (count($options) === 0) {
-          print_r($mappings);
-          throw new Error("No options left for $digit");
-        }
+
       }
-      // print_r($mappings);
-      // break;
     }
+    print_r($mappings);
 
   }
 
