@@ -114,8 +114,23 @@ function neighbors($data, $x, $y) {
   return $result;
 }
 
-print_r(neighbors($data, 9, 2));
-print_r($data[2][9]);
+function neighborCoords($data, $x, $y) {
+  $result = [];
+  if ($x > 0) array_push($result, [$x-1, $y]);
+  if ($x < count($data[0])-1) array_push($result, [$x+1, $y]);
+  if ($y > 0) array_push($result, [$x, $y-1]);
+  if ($y < count($data)-1) array_push($result, [$x, $y+1]);
+  return $result;
+}
+
+function neighborBasinCoords($data, $x, $y) {
+  $result = [];
+  $ns = neighborCoords($data, $x, $y);
+  foreach ($ns as $coord) {
+    if ($data[$coord[1]][$coord[0]] !== 9) array_push($result, $coord);
+  }
+  return $result;
+}
 
 function solvePart1($data) {
   $answer = 0;
@@ -129,7 +144,6 @@ function solvePart1($data) {
       }
       if ($isLowest) {
         $riskLevel = $data[$y][$x] + 1;
-        // echo "Risk level for $x,$y is $riskLevel\n";
         $answer += $riskLevel;
       }
 
@@ -140,9 +154,52 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  $answer = 0;
-  return $answer;
+  $filledCoords = [];
+  $basins = [];
+  for ($y = 0; $y < count($data); $y++) {
+    for ($x = 0; $x < count($data[0]); $x++) {
+      
+      // echo "Trying $x, $y\n";
+      if (in_array([$x, $y], $filledCoords)) continue;
+      if ($data[$y][$x] === 9) continue;
+      // else: start a flood fill from this coord
+      echo "Flood-filling from x,y = $x,$y\n";
+
+      $next = [[$x,$y]];
+      $loop = 0;
+      $size = 1; // start with coord itself
+
+      while (!empty($next)) {
+        //echo "  Looped\n";
+        // foreach ($next as $a) echo "  Filled x,y == $a[1],$a[0]\n";
+
+        $newNexts = array_map(fn ($c) => neighborBasinCoords($data, $c[0], $c[1]), $next);
+        $newNexts = array_merge(...array_values($newNexts)); // flatten
+        $newNexts = array_filter($newNexts, fn($c) => !in_array($c, $filledCoords));
+
+        $uniques = array_unique(array_map(fn($c) => "$c[0],$c[1]", $newNexts));
+        $size += count($uniques);
+
+        $newNexts = array_map(fn($txt) => array_map('intval', explode(",", $txt)), $uniques);
+
+        $filledCoords = array_merge($filledCoords, $next);
+        $next = $newNexts;
+
+        if ($loop++ > 100000) {
+          echo "UH OH CANT FILL THIS MUCH\n";
+          throw new Error("uhoh");
+        }
+      }
+
+      array_push($basins, $size);
+    }
+  }
+
+  rsort($basins);
+
+  return $basins[0] * $basins[1] * $basins[2];
 }
+
 
 echo "Solution 1: " . solvePart1($data) . "\n";
 echo "Solution 2: " . solvePart2($data) . "\n";
