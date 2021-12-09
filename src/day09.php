@@ -108,11 +108,14 @@ $data = array_map(fn ($row) => array_map('intval', str_split($row)), preg_split(
 function neighbors($data, $x, $y) {
   $result = [];
   if ($x > 0) array_push($result, $data[$y][$x-1]);
-  if ($x < count($data[0])-2) array_push($result, $data[$y][$x+1]);
-  if ($y > 0) array_push($result, $data[$y-1][$y]);
-  if ($y < count($data)-2) array_push($result, $data[$y+1][$x]);
+  if ($x < count($data[0])-1) array_push($result, $data[$y][$x+1]);
+  if ($y > 0) array_push($result, $data[$y-1][$x]);
+  if ($y < count($data)-1) array_push($result, $data[$y+1][$x]);
   return $result;
 }
+
+print_r(neighbors($data, 9, 2));
+print_r($data[2][9]);
 
 function solvePart1($data) {
   $answer = 0;
@@ -120,13 +123,13 @@ function solvePart1($data) {
   for ($y = 0; $y < count($data); $y++) {
     for ($x = 0; $x < count($data[0]); $x++) {
 
-      $riskLevel = 0;
       $isLowest = true;
       foreach (neighbors($data, $x, $y) as $neighbor) {
         if ($neighbor <= $data[$y][$x]) $isLowest = false;
-        else $riskLevel += $neighbor + 1;
       }
       if ($isLowest) {
+        $riskLevel = $data[$y][$x] + 1;
+        // echo "Risk level for $x,$y is $riskLevel\n";
         $answer += $riskLevel;
       }
 
