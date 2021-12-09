@@ -1,0 +1,5 @@
+{
+    "require": {
+        "illuminate/collections": "^8.75"
+    }
+}
