@@ -19,7 +19,7 @@ Some learned lesson for each day:
 7. Math _can_ be intuitive.
 8. **Wisdom lies with the crowd.** I am not wise.
 9. You _should_ use the best tool for a job.
-10. TODO
+10. Knowing what to prepare is black magic.
 11. TODO
 12. TODO
 13. TODO
