@@ -4,7 +4,12 @@ Solutions to [the 2021 edition of Advent of Code](https://adventofcode.com/2021)
 
 ## Running
 
-Simply `php day01.php` and so forth should do the trick!
+Requirements:
+
+- PHP runtime (I used version 8.1.0)
+- Composer (I used version 2.1.3)
+
+Install Composer's dependencies and then run a day with `php ./src/day01.php` or similar.
 
 ## Lessons Learned
 
