@@ -25,7 +25,7 @@ Some learned lesson for each day:
 8. **Wisdom lies with the crowd.** I am not wise.
 9. You _should_ use the best tool for a job.
 10. Knowing what to prepare is black magic.
-11. TODO
+11. Being _off_ is bad. Being _off by one_ is worse.
 12. TODO
 13. TODO
 14. TODO
