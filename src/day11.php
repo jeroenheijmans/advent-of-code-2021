@@ -10,16 +10,16 @@ function collect($value = null)
 }
 
 $input = "
-4341347643
-5477728451
-2322733878
-5453762556
-2718123421
-4237886115
-5631617114
-2217667227
-4236581255
-4482627641
+5483143223
+2745854711
+5264556173
+6141336146
+6357385478
+4167524645
+2176841721
+6882881134
+4846848554
+5283751526
 ";
 
 $data = array_map(
@@ -143,8 +143,7 @@ function solvePart2($data) {
       $flashes = $newFlashes->unique();
     }
 
-    // echo "Step $step ave $answer flashes\n";
-    if ($answer === 100) return $step;
+    if ($answer === 100) return $step + 1; // ugh off by one 😝
   }
 
   return $answer;
