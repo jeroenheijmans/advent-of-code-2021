@@ -84,6 +84,8 @@ function solvePart1($caves) {
     $paths = array_merge($finishedPaths, $openPaths);
   }
 
+  $paths = array_filter($paths, fn($path) => end($path) === "end");
+
   print_r($paths);
 
   return count($paths);
