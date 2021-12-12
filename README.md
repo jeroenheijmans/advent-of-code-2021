@@ -26,7 +26,7 @@ Some learned lesson for each day:
 9. You _should_ use the best tool for a job.
 10. Knowing what to prepare is black magic.
 11. Being _off_ is bad. Being _off by one_ is worse.
-12. TODO
+12. Oh, right. **Memory is _limited_ on a computer.**
 13. TODO
 14. TODO
 15. TODO
