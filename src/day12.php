@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '2048M');
+
 require_once "../vendor/autoload.php";
 
 use Illuminate\Support\Collection;
@@ -121,6 +123,8 @@ function solvePart2($caves) {
 
     if (empty($openPaths)) break;
     if ($loop++ > 100) { throw new Error("Don't want to hang my solution..."); }
+
+    echo "Loop $loop memory usage " . memory_get_usage() . " for " . count($paths) . " paths\n";
 
     $paths = array_merge($finishedPaths, $openPaths);
   }
