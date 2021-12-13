@@ -903,18 +903,20 @@ function solvePart1($data) {
     ->filter(fn($r) => str_contains($r, "fold"))
     ->map(fn($r) => explode("=", str_replace("fold along ", "", $r)));
   
-  $i = 0;
+  foreach ($folds as $fold) {
+    $dots = $dots->map(fn($dot) =>
+      $fold[0] === "y"
+      ? [$dot[0], ( $dot[1] > $fold[1] ? $fold[1] - ($dot[1] - $fold[1]) : $dot[1] )]
+      : [         ( $dot[0] > $fold[1] ? $fold[1] - ($dot[0] - $fold[1]) : $dot[0] ), $dot[1]]
+    );
+  
+    // print_r($dots->map(fn($d) => implode(",", $d))->sort());
+  
+    return $dots->map(fn($d) => implode(",", $d))->unique()->count();
 
-  $dots->map(fn($dot) =>
-    $folds[$i][0] === "y"
-    ? [$dot[0], ( $dot[1] > $folds[$i][1] ? $folds[$i][1] - ($dot[1] - $folds[$i][1]) : $dot[1] )]
-    : [         ( $dot[0] > $folds[$i][1] ? $folds[$i][1] - ($dot[0] - $folds[$i][1]) : $dot[0] ), $dot[1]]
-  );
+  }
 
-  print_r($dots->map(fn($d) => implode(",", $d)));
-
-  return $dots->unique()->count() - 1;
-
+  return -1;
 }
 
 function solvePart2($data) {
