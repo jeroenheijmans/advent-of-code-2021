@@ -910,10 +910,7 @@ function solvePart1($data) {
       : [         ( $dot[0] > $fold[1] ? $fold[1] - ($dot[0] - $fold[1]) : $dot[0] ), $dot[1]]
     );
   
-    // print_r($dots->map(fn($d) => implode(",", $d))->sort());
-  
     return $dots->map(fn($d) => implode(",", $d))->unique()->count();
-
   }
 
   return -1;
@@ -943,12 +940,12 @@ function solvePart2($data) {
 
   for ($y = 0; $y <= $maxy; $y++) {
     for ($x = 0; $x <= $maxx; $x++) {
-      echo in_array([$x,$y], $dots) ? "#" : " ";
+      echo in_array([$x,$y], $dots) ? "▓" : " ";
     }
     echo "\n";
   }
 
-  return -1;
+  return "See ascii art above";
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
