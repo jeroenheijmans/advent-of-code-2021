@@ -920,6 +920,34 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
+  $dots = collect($data)
+    ->filter(fn($r) => !str_contains($r, "fold") && $r !== "")
+    ->map(fn($r) => array_map('intval', explode(",",$r)));
+  
+  $folds = collect($data)
+    ->filter(fn($r) => str_contains($r, "fold"))
+    ->map(fn($r) => explode("=", str_replace("fold along ", "", $r)));
+  
+  foreach ($folds as $fold) {
+    $dots = $dots->map(fn($dot) =>
+      $fold[0] === "y"
+      ? [$dot[0], ( $dot[1] > $fold[1] ? $fold[1] - ($dot[1] - $fold[1]) : $dot[1] )]
+      : [         ( $dot[0] > $fold[1] ? $fold[1] - ($dot[0] - $fold[1]) : $dot[0] ), $dot[1]]
+    ); 
+  }
+
+  $maxx = $dots->map(fn($d) => $d[0])->max();
+  $maxy = $dots->map(fn($d) => $d[1])->max();
+
+  $dots = $dots->toArray();
+
+  for ($y = 0; $y <= $maxy; $y++) {
+    for ($x = 0; $x <= $maxx; $x++) {
+      echo in_array([$x,$y], $dots) ? "#" : " ";
+    }
+    echo "\n";
+  }
+
   return -1;
 }
 
