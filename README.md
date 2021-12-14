@@ -28,7 +28,7 @@ Some learned lesson for each day:
 11. Being _off_ is bad. Being _off by one_ is worse.
 12. Oh, right. **Memory is _limited_ on a computer.**
 13. ASCII art is our time's "cave paintings".
-14. TODO
+14. Use 20/20 hindsight to improve relics of the past!
 15. TODO
 16. TODO
 17. TODO
