@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '512M');
+
 require_once "../vendor/autoload.php";
 
 use Illuminate\Support\Collection;
@@ -141,7 +143,29 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  return -1;
+  $polymer = str_split($data[0]);
+  $rules = collect($data)->skip(2)->map(fn($r) => str_split(str_replace(" -> ", "", $r)));
+
+  $start = microtime(true);
+  for ($step = 0; $step < 40; $step++) {
+    // echo implode($polymer) . "\n";
+    echo "Step $step polymer length " . count($polymer) . "\n";
+    $newPolymer = [];
+
+    for ($i = 0; $i < count($polymer) - 1; $i++) {
+      $rule = $rules->first(fn($r) => $r[0] === $polymer[$i] && $r[1] === $polymer[$i + 1]);
+      // echo "Matched $polymer[$i] and $polymer[$i] with rule " . implode("/", $rule) . "\n";
+      array_push($newPolymer, $polymer[$i], $rule[2]);
+    }
+
+    array_push($newPolymer, $polymer[count($polymer) - 1]);
+
+    $polymer = $newPolymer;
+  }
+
+  $counts = collect(array_count_values($polymer));
+
+  return $counts->max() - $counts->min();
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
