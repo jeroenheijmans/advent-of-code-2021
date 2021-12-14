@@ -146,15 +146,15 @@ function solvePart2($data) {
   $polymer = str_split($data[0]);
   $rules = collect($data)->skip(2)->map(fn($r) => str_split(str_replace(" -> ", "", $r)));
 
-  $start = microtime(true);
-  for ($step = 0; $step < 40; $step++) {
+  for ($step = 0; $step < 18; $step++) {
+    // echo "Step $step polymer length " . count($polymer) . "\n";
     // echo implode($polymer) . "\n";
-    echo "Step $step polymer length " . count($polymer) . "\n";
+    echo collect(array_count_values($polymer))->sortKeys()->map(fn($val, $key) => "$key=$val")->implode(",") . "\n";
+
     $newPolymer = [];
 
     for ($i = 0; $i < count($polymer) - 1; $i++) {
       $rule = $rules->first(fn($r) => $r[0] === $polymer[$i] && $r[1] === $polymer[$i + 1]);
-      // echo "Matched $polymer[$i] and $polymer[$i] with rule " . implode("/", $rule) . "\n";
       array_push($newPolymer, $polymer[$i], $rule[2]);
     }
 
