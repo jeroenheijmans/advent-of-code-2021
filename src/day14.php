@@ -143,29 +143,44 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
-  $polymer = str_split($data[0]);
   $rules = collect($data)->skip(2)->map(fn($r) => str_split(str_replace(" -> ", "", $r)));
+  $paircounts = $rules->keyBy(fn($rule) => "$rule[0]$rule[1]")->map(fn($x) => 0);
 
-  for ($step = 0; $step < 18; $step++) {
-    // echo "Step $step polymer length " . count($polymer) . "\n";
-    // echo implode($polymer) . "\n";
-    echo collect(array_count_values($polymer))->sortKeys()->map(fn($val, $key) => "$key=$val")->implode(",") . "\n";
-
-    $newPolymer = [];
-
-    for ($i = 0; $i < count($polymer) - 1; $i++) {
-      $rule = $rules->first(fn($r) => $r[0] === $polymer[$i] && $r[1] === $polymer[$i + 1]);
-      array_push($newPolymer, $polymer[$i], $rule[2]);
-    }
-
-    array_push($newPolymer, $polymer[count($polymer) - 1]);
-
-    $polymer = $newPolymer;
+  $startPolymer = str_split($data[0]);
+  for ($i = 0; $i < count($startPolymer) - 1; $i++) {
+    $pair = "$startPolymer[$i]" . $startPolymer[$i+1];
+    $paircounts[$pair] += 1;
   }
 
-  $counts = collect(array_count_values($polymer));
+  for ($step = 0; $step < 40; $step++) {
+    $newPairCounts = $paircounts->collect()->map(fn($x) => 0);
 
-  return $counts->max() - $counts->min();
+    foreach($rules as $rule) {
+      $pair = "$rule[0]$rule[1]";
+      $occurrences = $paircounts[$pair];
+      $left = "$rule[0]$rule[2]";
+      $right = "$rule[2]$rule[1]";
+
+      $newPairCounts[$left] += $occurrences;
+      $newPairCounts[$right] += $occurrences;
+    }
+
+    $paircounts = $newPairCounts;
+  }
+
+  $letters = $rules->collect()->flatten()->unique();
+  $letterCounts = [];
+  
+  foreach ($letters as $letter) {
+    $dupecount = $paircounts["$letter$letter"];
+    $othercounts = $paircounts->filter(fn($val, $key) => str_contains($key, $letter) && $key !== "$letter$letter")->sum();
+    $total = ceil($othercounts / 2) + $dupecount;
+    $letterCounts[$letter] = $total;
+  }
+
+  // print_r($paircounts);
+
+  return max($letterCounts) - min($letterCounts);
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
