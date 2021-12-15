@@ -232,10 +232,18 @@ function solvePart2($data) {
     for ($x = 0; $x < $size; $x++) {
       $smallY = $y % $tilesize;
       $smallX = $x % $tilesize;
-      $value = ($data[$smallY][$smallX] + floor($x / $tilesize) + floor($y / $tilesize)) % 9;
+      $value = ($data[$smallY][$smallX] + floor($x / $tilesize) + floor($y / $tilesize));
+      if ($value > 9) $value = $value - 9; // Whelp that's ugly!
       $nodes[$y][$x] = new Node($y, $x, $value);
     }
   }
+  
+  // for ($y = 0; $y < $size; $y++) {
+  //   for ($x = 0; $x < $size; $x++) {
+  //     echo $nodes[$y][$x]->risk . ($x % 10 === 9 ? " " : "");
+  //   }
+  //   echo "\n" . ($y % 10 === 9 ? "\n" : "");
+  // }
 
   for ($y = 0; $y < $size; $y++) {
     for ($x = 0; $x < $size; $x++) {
