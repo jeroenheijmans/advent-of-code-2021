@@ -29,7 +29,7 @@ Some learned lesson for each day:
 12. Oh, right. **Memory is _limited_ on a computer.**
 13. ASCII art is our time's "cave paintings".
 14. Use 20/20 hindsight to improve relics of the past!
-15. TODO
+15. You should map hard problems to solved problems.
 16. TODO
 17. TODO
 18. TODO
