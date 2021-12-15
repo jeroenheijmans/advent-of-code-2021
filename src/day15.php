@@ -128,30 +128,28 @@ class Node {
   }
 }
 
-$size = count($data);
-$nodes = [];
-
-for ($y = 0; $y < $size; $y++) {
-  $nodes[$y] = [];
-  for ($x = 0; $x < $size; $x++) {
-    $nodes[$y][$x] = new Node($y, $x, $data[$y][$x]);
-  }
-}
-
-for ($y = 0; $y < $size; $y++) {
-  for ($x = 0; $x < $size; $x++) {
-    if ($y > 0) $nodes[$y][$x]->neighbors[$nodes[$y-1][$x]->key] = $nodes[$y-1][$x];
-    if ($x > 0) $nodes[$y][$x]->neighbors[$nodes[$y][$x-1]->key] = $nodes[$y][$x-1];
-    if ($y < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y+1][$x]->key] = $nodes[$y+1][$x];
-    if ($x < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y][$x+1]->key] = $nodes[$y][$x+1];
-  }
-}
-
-$nodes[0][0]->cheapestKnownRoute = 0;
-
-function solvePart1($data, $nodes) {
+function solvePart1($data) {
   $size = count($data);
   $targetNodeKey = $size-1 . "," . $size-1;
+  $nodes = [];
+
+  for ($y = 0; $y < $size; $y++) {
+    $nodes[$y] = [];
+    for ($x = 0; $x < $size; $x++) {
+      $nodes[$y][$x] = new Node($y, $x, $data[$y][$x]);
+    }
+  }
+
+  for ($y = 0; $y < $size; $y++) {
+    for ($x = 0; $x < $size; $x++) {
+      if ($y > 0) $nodes[$y][$x]->neighbors[$nodes[$y-1][$x]->key] = $nodes[$y-1][$x];
+      if ($x > 0) $nodes[$y][$x]->neighbors[$nodes[$y][$x-1]->key] = $nodes[$y][$x-1];
+      if ($y < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y+1][$x]->key] = $nodes[$y+1][$x];
+      if ($x < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y][$x+1]->key] = $nodes[$y][$x+1];
+    }
+  }
+
+  $nodes[0][0]->cheapestKnownRoute = 0;
 
   $visited = new Collection();
   $toVisitNodes = new Collection([$nodes[0][0]->key => $nodes[0][0]]);
@@ -225,5 +223,5 @@ function solvePart2($data) {
   return -1;
 }
 
-echo "Solution 1: " . solvePart1($data, $nodes) . "\n";
+echo "Solution 1: " . solvePart1($data) . "\n";
 echo "Solution 2: " . solvePart2($data) . "\n";
