@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '2048M');
+
 require_once "../vendor/autoload.php";
 
 use Illuminate\Support\Collection;
@@ -220,6 +222,97 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
+  $tilesize = count($data);
+  $size = $tilesize * 5;
+  $targetNodeKey = $size-1 . "," . $size-1;
+  $nodes = [];
+
+  for ($y = 0; $y < $size; $y++) {
+    $nodes[$y] = [];
+    for ($x = 0; $x < $size; $x++) {
+      $smallY = $y % $tilesize;
+      $smallX = $x % $tilesize;
+      $value = ($data[$smallY][$smallX] + floor($x / $tilesize) + floor($y / $tilesize)) % 9;
+      $nodes[$y][$x] = new Node($y, $x, $value);
+    }
+  }
+
+  for ($y = 0; $y < $size; $y++) {
+    for ($x = 0; $x < $size; $x++) {
+      if ($y > 0) $nodes[$y][$x]->neighbors[$nodes[$y-1][$x]->key] = $nodes[$y-1][$x];
+      if ($x > 0) $nodes[$y][$x]->neighbors[$nodes[$y][$x-1]->key] = $nodes[$y][$x-1];
+      if ($y < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y+1][$x]->key] = $nodes[$y+1][$x];
+      if ($x < $size-1) $nodes[$y][$x]->neighbors[$nodes[$y][$x+1]->key] = $nodes[$y][$x+1];
+    }
+  }
+
+  $nodes[0][0]->cheapestKnownRoute = 0;
+
+  $visited = new Collection();
+  $toVisitNodes = new Collection([$nodes[0][0]->key => $nodes[0][0]]);
+
+  $currentRiskLevel = 0;
+
+  while ($currentRiskLevel++ < 10000) {
+    // echo "Considering risk level $currentRiskLevel\n";
+    // echo "\nConsidering risk level $currentRiskLevel and already visited: " . implode(" | ", $visited->keys()->toArray()) . "\n";
+    // echo "\nConsidering risk level $currentRiskLevel and considering next: " . implode(" | ", $toVisitNodes->keys()->toArray()) . "\n";
+
+    $nextUpNodes = new Collection();
+
+    foreach ($toVisitNodes as $source) {
+      if ($visited->has($source->key)) throw new Error("Already visited " . $source->key);
+
+      foreach ($source->neighbors as $target) {
+        if ($visited->has($target->key) || $toVisitNodes->has($target->key)) {
+          // echo "Ignoring " . $target->key . " as it's already in play\n";
+          unset($source->neighbors[$target->key]);
+          continue;
+        }
+
+        $costToReachFromSource = $source->cheapestKnownRoute + $target->risk;
+        // echo "Cost to reach " . $target->key . " is $costToReachFromSource\n";
+        if ($costToReachFromSource > $currentRiskLevel) continue; // not yet its turn
+
+        unset($source->neighbors[$target->key]);
+
+
+        if (!$nextUpNodes->has($target->key)) {
+          // echo "Making it next up...\n";
+          $nextUpNodes->put($target->key, $target);
+        }
+
+        $target->cheapestKnownRoute = min($costToReachFromSource, $target->cheapestKnownRoute);
+      }
+
+      // echo "Checking if " . $source->key . " is empty, neighbors are now: " . implode(" | ", array_keys($source->neighbors)) . "\n";
+      
+      if (empty($source->neighbors)) {
+        // echo "It's visited now...\n";
+        $visited->put($source->key, $source);
+      }
+      else {
+        // echo "It's going to be next up again...\n";
+        $nextUpNodes->put($source->key, $source); // visit it again! possibly with less neighbors
+      }
+    }
+
+    if ($visited->has($targetNodeKey)) {
+
+      // for ($y = 0; $y < $size; $y++) {
+      //   for ($x = 0; $x < $size; $x++) {
+      //     if ($visited->has("$y,$x")) echo $visited->get("$y,$x")->cheapestKnownRoute . ",";
+      //     else echo ",";
+      //   }
+      //   echo "\n";
+      // }
+
+      return $visited->get($targetNodeKey)->cheapestKnownRoute;
+    }
+
+    $toVisitNodes = $nextUpNodes;
+  }
+
   return -1;
 }
 
