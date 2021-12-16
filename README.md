@@ -30,7 +30,7 @@ Some learned lesson for each day:
 13. ASCII art is our time's "cave paintings".
 14. Use 20/20 hindsight to improve relics of the past!
 15. You should map hard problems to solved problems.
-16. TODO
+16. **Reading comprehension is tough.**
 17. TODO
 18. TODO
 19. TODO
