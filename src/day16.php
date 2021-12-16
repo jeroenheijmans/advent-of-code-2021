@@ -56,7 +56,7 @@ class Packet {
 
     $pos += 3;
 
-    echo "Version ($versionBits) $this->version. Type ($typeBits) $this->type\n";
+    // echo "Version ($versionBits) $this->version. Type ($typeBits) $this->type\n";
 
     if ($this->type === 4) { // Literal value
       
@@ -110,18 +110,43 @@ class Packet {
   public function getSummedVersions() {
     return $this->version + array_sum(array_map(fn($p) => $p->getSummedVersions(), $this->subpackets));
   }
+
+  public function calculate() {
+    if ($this->type === 4) return $this->value;
+
+    $subvalues = array_map(fn($p) => $p->calculate(), $this->subpackets);
+
+    switch ($this->type) {
+      case 0: // SUM
+        return array_sum($subvalues);
+      case 1: // PRODUCT
+        return array_product($subvalues);
+      case 2: // MINIMUM
+        return min($subvalues);
+      case 3: // MAXIMUM
+        return max($subvalues);
+      case 5: // GREATER THAN
+        return $subvalues[0] > $subvalues[1] ? 1 : 0;
+      case 6: // LESS THAN
+        return $subvalues[0] < $subvalues[1] ? 1 : 0;
+      case 7: // EQUAL TO
+        return $subvalues[0] === $subvalues[1] ? 1 : 0;
+      default:
+        throw new Error("Unsupported type $this->type");
+    }
+  }
 }
 
 function solvePart1($data) {
-  // echo "Reading $data\n";
   $bits = hexbin($data);
   $topLevelPacket = new Packet($bits, 0);
-  // print_r($topLevelPacket);
   return $topLevelPacket->getSummedVersions();
 }
 
 function solvePart2($data) {
-  return -1;
+  $bits = hexbin($data);
+  $topLevelPacket = new Packet($bits, 0);
+  return $topLevelPacket->calculate();
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
