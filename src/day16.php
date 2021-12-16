@@ -34,26 +34,29 @@ function hexbin($in) {
   return $result;
 }
 
-$input = "EE00D40C823060";
+$input = "38006F45291200";
 
 $data = trim($input);
 
 class Packet {
-  public function __construct($bits) {
+  public function __construct($bits, $pos) {
+    echo "Reading " . substr($bits, 0, $pos) . ">" . substr($bits, $pos) . "\n";
+
     $this->subpackets = [];
     $this->value = 0;
     $this->bits = $bits;
     
-    $versionBits = substr($bits, 0, 3);
-    $typeBits = substr($bits, 3, 3);
-
+    $versionBits = substr($bits, $pos, 3);
     $this->version = bindec($versionBits);
+
+    $pos += 3;
+
+    $typeBits = substr($bits, $pos, 3);
     $this->type = bindec($typeBits);
 
-    $pos = 6;
+    $pos += 3;
 
-    echo "Reading $bits\n";
-    echo "Version $this->version type $this->type\n";
+    echo "Version ($versionBits) $this->version. Type ($typeBits) $this->type\n";
 
     if ($this->type === 4) { // Literal value
       
@@ -64,10 +67,8 @@ class Packet {
         $part = substr($bits, $pos + 1, 4);
 
         $numberbits .= $part;
-        if ($start === "0") break;
-
         $pos += 5;
-        if ($pos > strlen($bits)) throw new Error("Parser went beyond end...");
+        if ($start === "0") break;
       }
 
       $this->value = bindec($numberbits);
@@ -81,23 +82,24 @@ class Packet {
       if ($this->lengthTypeId === "0") { // MODE 15
         $totalLengthInBitsOfSubPackets = bindec(substr($bits, $pos, 15));
         $pos += 15;
-        // todo?
-        throw new Error("Mode 15 not implemented yet");
-
+        echo "Mode 15 going to read $totalLengthInBitsOfSubPackets bits\n";
+        
+        // TODO
+        throw new Error("Mode 15 not ipmlemented yet");
       } else { // MODE 11
         $numberOfSubPackets = bindec(substr($bits, $pos, 11));
         $pos += 11;
+        echo "Mode 11 going to read $numberOfSubPackets packets\n";
         
         for ($n = 0; $n < $numberOfSubPackets; $n++) {
-          $rest = substr($bits, $pos);
-          $sub = new Packet($rest);
+          $sub = new Packet($bits, $pos);
           array_push($this->subpackets, $sub);
-          $bits = $sub->rest;
+          $pos = $sub->posAfterParse;
         }
       }
     }
 
-    $this->rest = substr($bits, $pos);
+    $this->posAfterParse = $pos;
   }
 
   public function getSummedVersions() {
@@ -108,7 +110,7 @@ class Packet {
 function solvePart1($data) {
   echo "Reading $data\n";
   $bits = hexbin($data);
-  $topLevelPacket = new Packet($bits);
+  $topLevelPacket = new Packet($bits, 0);
   print_r($topLevelPacket);
   return $topLevelPacket->getSummedVersions();
 }
