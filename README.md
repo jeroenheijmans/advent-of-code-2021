@@ -31,7 +31,7 @@ Some learned lesson for each day:
 14. Use 20/20 hindsight to improve relics of the past!
 15. You should map hard problems to solved problems.
 16. **Reading comprehension is tough.**
-17. TODO
+17. Devils live in details.
 18. TODO
 19. TODO
 20. TODO
