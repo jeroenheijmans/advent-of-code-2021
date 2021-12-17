@@ -30,9 +30,9 @@ function solvePart($data, $part = 1) {
   $highest = 0;
   $count = 0;
 
-  for ($startvx = $minvx; $startvx < $x2; $startvx++) {
+  for ($startvx = $minvx; $startvx <= $x2; $startvx++) {
     // echo "Running with vx $startvx...\n";
-    for ($startvy = 2; $startvy < 250; $startvy++) {
+    for ($startvy = -250; $startvy < 250; $startvy++) {
       // echo "  Running with vy $startvy...\n";
       $vy = $startvy;
       $vx = $startvx;
