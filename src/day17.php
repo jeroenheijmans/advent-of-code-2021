@@ -15,7 +15,7 @@ $input = "target area: x=88..125, y=-157..-103";
 preg_match("/x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)/", trim($input), $matches);
 $data = array_map('intval', $matches);
 
-function solvePart1($data) {
+function solvePart($data, $part = 1) {
   $x1 = $data[1];
   $x2 = $data[2];
   $y1 = $data[3];
@@ -28,6 +28,7 @@ function solvePart1($data) {
   } while ($maxx < $data[1]);
 
   $highest = 0;
+  $count = 0;
 
   for ($startvx = $minvx; $startvx < $x2; $startvx++) {
     // echo "Running with vx $startvx...\n";
@@ -50,18 +51,19 @@ function solvePart1($data) {
         if ($x >= $x1 && $x <= $x2 && $y <= $y2 && $y >= $y1) {
           // echo "$maxy max for vx=$startvx and vy=$startvy - hitting the box at $x,$y\n";
           $highest = max($highest, $maxy);
+          $count++;
           break;
         }
       }
     }
   }
 
-  return $highest;
+  return $part === 1 ? $highest : $count;
 }
 
 function solvePart2($data) {
   return -1;
 }
 
-echo "Solution 1: " . solvePart1($data) . "\n";
-echo "Solution 2: " . solvePart2($data) . "\n";
+echo "Solution 1: " . solvePart($data, 1) . "\n";
+echo "Solution 2: " . solvePart($data, 2) . "\n";
