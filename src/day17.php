@@ -9,26 +9,54 @@ function collect($value = null)
     return new Collection($value);
 }
 
-$input = "
-target area: x=20..30, y=-10..-5
-";
+// $input = "target area: x=20..30, y=-10..-5";
+$input = "target area: x=88..125, y=-157..-103";
 
 preg_match("/x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)/", trim($input), $matches);
 $data = array_map('intval', $matches);
 
 function solvePart1($data) {
-  
-  // determine minimal X velocity translate to minimal T
-  // determine maximum X velocity translate to maximal T
+  $x1 = $data[1];
+  $x2 = $data[2];
+  $y1 = $data[3];
+  $y2 = $data[4];
 
-  // find minimum Y velocity (must be positive, right?)
-  // find maximum Y velocity
+  $minvx = 0;
+  do {
+    $minvx++;
+    $maxx = ($minvx * ($minvx + 1) ) / 2; // won't go any further than this
+  } while ($maxx < $data[1]);
 
-  // loop through all options
-  //  determine highest point
-  //  save maximum high point
+  $highest = 0;
 
-  return -1;
+  for ($startvx = $minvx; $startvx < $x2; $startvx++) {
+    // echo "Running with vx $startvx...\n";
+    for ($startvy = 2; $startvy < 100; $startvy++) {
+      // echo "  Running with vy $startvy...\n";
+      $vy = $startvy;
+      $vx = $startvx;
+      $x = 0;
+      $y = 0;
+      $maxy = 0;
+
+      while ($y > $y1) {
+        // echo "    At $x,$y should be within x [$x1, $x2] and y [$y1, $y2]\n";
+        $x += $vx;
+        $y += $vy;
+        $vx = $vx === 0 ? 0 : $vx - 1;
+        $vy--;
+        $maxy = max($maxy, $y);
+        
+        if ($x >= $x1 && $x <= $x2 && $y <= $y2 && $y >= $y1) {
+          // echo "$maxy max for vx=$startvx and vy=$startvy - hitting the box at $x,$y\n";
+          $highest = max($highest, $maxy);
+          break;
+        }
+      }
+    }
+  }
+
+  return $highest;
 }
 
 function solvePart2($data) {
