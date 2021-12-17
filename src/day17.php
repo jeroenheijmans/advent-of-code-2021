@@ -10,11 +10,24 @@ function collect($value = null)
 }
 
 $input = "
+target area: x=20..30, y=-10..-5
 ";
 
-$data = preg_split("/\r?\n/", trim($input));
+preg_match("/x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)/", trim($input), $matches);
+$data = array_map('intval', $matches);
 
 function solvePart1($data) {
+  
+  // determine minimal X velocity translate to minimal T
+  // determine maximum X velocity translate to maximal T
+
+  // find minimum Y velocity (must be positive, right?)
+  // find maximum Y velocity
+
+  // loop through all options
+  //  determine highest point
+  //  save maximum high point
+
   return -1;
 }
 
