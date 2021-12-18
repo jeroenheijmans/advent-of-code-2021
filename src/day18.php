@@ -1,14 +1,5 @@
 <?php
 
-require_once "../vendor/autoload.php";
-
-use Illuminate\Support\Collection;
-
-function collect($value = null)
-{
-    return new Collection($value);
-}
-
 $input = "
 [[[[4,0],6],[4,4]],[[6,8],0]]
 [[1,[[1,6],0]],[[[8,9],2],[[0,8],[5,5]]]]
@@ -117,10 +108,12 @@ $data = preg_split("/\r?\n/", trim($input));
 class Tree {
   public function __construct(
     public $parent = null,
+    public $value = null,
     public $left = null,
     public $right = null,
-    public $value = null,
   ) {
+    if ($left !== null) $left->parent = $this;
+    if ($right !== null) $right->parent = $this;
   }
 
   public function depth() {
@@ -133,8 +126,7 @@ class Tree {
   public function isPair() { return $this->left?->isValue() && $this->right?->isValue(); }
 
   public function explodable() {
-    if ($this->isValue()) return false;
-    return $this->left->isValue() && $this->right->isValue() && $this->depth() >= 4;
+    return !$this->isValue() && $this->isPair() && $this->depth() >= 4;
   }
 
   public function splittable() {
@@ -142,17 +134,8 @@ class Tree {
   }
 
   public function split() {
-    if (!$this->splittable()) throw new Error("Trying to split unsplittable item");
-
-    $this->left = new Tree();
-    $this->right = new Tree();
-
-    $this->left->value = floor($this->value / 2);
-    $this->right->value = ceil($this->value / 2);
-
-    $this->left->parent = $this;
-    $this->right->parent = $this;
-
+    $this->left = new Tree(parent: $this, value: floor($this->value / 2));
+    $this->right = new Tree(parent: $this, value: ceil($this->value / 2));
     $this->value = null;
   }
 
@@ -161,8 +144,11 @@ class Tree {
     if ($this->isValue()) {
       array_push($result, $this);
     } else {
-      $result = array_merge($result, $this->left?->buildLeavesList());
-      $result = array_merge($result, $this->right?->buildLeavesList());
+      $result = array_merge(
+        $result,
+        $this->left?->buildLeavesList(),
+        $this->right?->buildLeavesList(),
+      );
     }
     return $result;
   }
@@ -172,15 +158,19 @@ class Tree {
     if ($this->isPair()) {
       array_push($result, $this);
     } else {
-      $result = array_merge($result, $this->left?->buildPairsList() ?? []);
-      $result = array_merge($result, $this->right?->buildPairsList() ?? []);
+      $result = array_merge(
+        $result,
+        $this->left?->buildPairsList() ?? [],
+        $this->right?->buildPairsList() ?? [],
+      );
     }
     return $result;
   }
 
   public function magnitude() {
-    if ($this->isValue()) return $this->value;
-    else return (3 * $this->left->magnitude()) + (2 * $this->right->magnitude());
+    return $this->isValue()
+      ? $this->value
+      : (3 * $this->left->magnitude()) + (2 * $this->right->magnitude());
   }
 
   public function __toString() {
@@ -234,23 +224,19 @@ function xpl($tree) {
   foreach ($list as $toExplode) {
     if ($toExplode->explodable()) {
       $list = $tree->buildLeavesList();
-      // echo "Exploding: $toExplode\n";
       
-      // the pair's left value is added to the first regular number to the left of the exploding pair (if any)
+      // "the pair's left value is added to the first regular number to the left of the exploding pair (if any)"
       $idx = array_search($toExplode->left, $list, $strict = true) - 1;
       if (key_exists($idx, $list)) $list[$idx]->value += $toExplode->left->value;
 
-      // the pair's right value is added to the first regular number to the right of the exploding pair (if any)
+      // "the pair's right value is added to the first regular number to the right of the exploding pair (if any)"
       $idx = array_search($toExplode->right, $list, $strict = true) + 1;
       if (key_exists($idx, $list)) $list[$idx]->value += $toExplode->right->value;
 
-      // Then, the entire exploding pair is replaced with the regular number 0
+      // "Then, the entire exploding pair is replaced with the regular number 0"
       $toExplode->left = null;
       $toExplode->right = null;
       $toExplode->value = 0;
-
-      // echo "Tree => $tree\n";
-      // echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth(), $tree->buildPairsList())) . "\n";
 
       return true; // idiomatic PHP, non? :P
     }
@@ -264,7 +250,6 @@ function splt($tree) {
 
   foreach ($list as $current) {
     if ($current->splittable()) {
-      // echo "Splitting: $current\n";
       $current->split();
       return true;
     }
@@ -274,12 +259,7 @@ function splt($tree) {
 }
 
 function add($a, $b) {
-  $result = new Tree();
-  $result->left = $a;
-  $result->right = $b;
-  $result->left->parent = $result;
-  $result->right->parent = $result;
-  return $result;
+  return new Tree(left: $a, right: $b);
 }
 
 function reduce($tree) {
@@ -292,7 +272,7 @@ function reduce($tree) {
     else if (splt($tree)) {
       $reduced = true;
     }
-    if ($loop++ > 500) throw new Error("More than 500 loops needed");
+    if ($loop++ > 500) throw new Error("More than 500 loops needed, perhaps code's wrong?!");
   } while ($reduced);
 }
 
@@ -309,7 +289,6 @@ function solvePart1($data) {
 function solvePart2($data) {
   $largest = 0;
   foreach ($data as $line1) {
-    // echo "Working on $line1\n";
     foreach ($data as $line2) {
       if ($line1 === $line2) continue;
       $current = add(parse($line1), parse($line2));
@@ -318,7 +297,6 @@ function solvePart2($data) {
       $largest = max($mag, $largest);
     }
   }
-  
   return $largest;
 }
 
