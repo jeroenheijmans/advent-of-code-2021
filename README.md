@@ -32,7 +32,7 @@ Some learned lesson for each day:
 15. You should map hard problems to solved problems.
 16. **Reading comprehension is tough.**
 17. Devils live in details.
-18. TODO
+18. _"I have no time to go fast!"_
 19. TODO
 20. TODO
 21. TODO
