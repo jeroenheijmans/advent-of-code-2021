@@ -9,7 +9,6 @@ function collect($value = null)
     return new Collection($value);
 }
 
-// $input = "3,4,3,1,2";
 $input = "
 [1,1]
 [2,2]
@@ -37,7 +36,7 @@ class Tree {
 
   public function explodable() {
     if ($this->isValue()) return false;
-    echo "  left? " . $this->left->isValue() . " right? " . $this->right->isValue() . " depth: " . $this->depth . "\n";
+    // echo "Considering $this for explosion.  left? " . $this->left->isValue() . " right? " . $this->right->isValue() . " depth: " . $this->depth . "\n";
     return $this->left->isValue() && $this->right->isValue() && $this->depth > 4;
   }
 
@@ -47,7 +46,6 @@ class Tree {
 
   public function split() {
     if (!$this->splittable()) throw new Error("Trying to split unsplittable item");
-    // echo "Splitting myself I am now: $this\n";
 
     $this->left = new Tree($this->depth + 1);
     $this->right = new Tree($this->depth + 1);
@@ -59,7 +57,6 @@ class Tree {
     $this->right->parent = $this;
 
     $this->value = null;
-    // echo "Just split myself I am now: $this\n";
   }
 
   public function deepenOne() {
@@ -139,7 +136,6 @@ function xpl($tree) {
   $list = $tree->buildPairsList();
 
   foreach ($list as $toExplode) {
-    echo "Considering $toExplode for explosion\n";
     if ($toExplode->explodable()) {
       $list = $tree->buildLeavesList();
       echo "Exploding: $toExplode\n";
@@ -157,6 +153,9 @@ function xpl($tree) {
       $toExplode->right = null;
       $toExplode->value = 0;
 
+      echo "Tree => $tree\n";
+      echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth, $tree->buildPairsList())) . "\n";
+
       return true; // idiomatic PHP, non? :P
     }
   }
@@ -167,12 +166,12 @@ function xpl($tree) {
 function splt($tree) {
   $list = $tree->buildLeavesList();
 
-  while (current($list)) {
-    if (current($list)->splittable()) {
-      current($list)->split();
+  foreach ($list as $current) {
+    if ($current->splittable()) {
+      echo "Splitting: $current\n";
+      $current->split();
       return true;
     }
-    next($list);
   }
 
   return false;
@@ -188,54 +187,25 @@ function add($a, $b) {
 }
 
 function reduce($tree) {
-  // echo "\nStarted with: $tree\n";
   $loop = 0;
   do {
     $reduced = false;
     if (xpl($tree)) {
-      // echo "Exploded to: $tree\n";
       $reduced = true;
     }
-    if (splt($tree)) {
-      // echo "Splitted to: $tree\n";
+    else if (splt($tree)) {
       $reduced = true;
     }
     if ($loop++ > 500) throw new Error("More than 500 loops needed");
   } while ($reduced);
-  // echo "Done reducing to: $tree\n\n";
 }
 
 // Checks for explode
-// $t = parse("[[[[[9,8],1],2],3],4]");                  $result = xpl($t); echo "$result\n$t should be\n[[[[0,9],2],3],4]\n\n";
-// $t = parse("[7,[6,[5,[4,[3,2]]]]]");                  $result = xpl($t); echo "$result\n$t should be\n[7,[6,[5,[7,0]]]]\n\n";
-// $t = parse("[[6,[5,[4,[3,2]]]],1]");                  $result = xpl($t); echo "$result\n$t should be\n[[6,[5,[7,0]]],3]\n\n";
-// $t = parse("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]");  $result = xpl($t); echo "$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]\n\n";
-// $t = parse("[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]");      $result = xpl($t); echo "$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[7,0]]]]\n\n";
-
-// $a = parse("[[[[4,3],4],4],[7,[[8,4],9]]]");
-// $b = parse("[1,1]");
-
-// $curr = add($a, $b);
-// reduce($curr);
-
-// echo "$curr should be \n";
-// echo "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]\n";
-
-// echo "\n";
-// $one = parse("[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]");
-// $two = parse("[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]");
-// echo "  $one\n";
-// echo "+ $two\n";
-// $added = add($one, $two);
-// echo "= $added\n";
-// reduce($added);
-// echo "= $added\n";
-// echo "= [[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]] (expected)\n";
-
-// $t = parse("[[[[[3,0],[5,3]],[4,4]],[5,5]],[6,6]]");
-// echo "$t\n";
-// reduce($t);
-// echo "$t\n";
+$t = parse("[[[[[9,8],1],2],3],4]");                  $result = xpl($t); if ("$t" !== "[[[[0,9],2],3],4]") throw new Error("$result\n$t should be\n[[[[0,9],2],3],4]\n\n");
+$t = parse("[7,[6,[5,[4,[3,2]]]]]");                  $result = xpl($t); if ("$t" !== "[7,[6,[5,[7,0]]]]") throw new Error("$result\n$t should be\n[7,[6,[5,[7,0]]]]\n\n");
+$t = parse("[[6,[5,[4,[3,2]]]],1]");                  $result = xpl($t); if ("$t" !== "[[6,[5,[7,0]]],3]") throw new Error("$result\n$t should be\n[[6,[5,[7,0]]],3]\n\n");
+$t = parse("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]");  $result = xpl($t); if ("$t" !== "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]") throw new Error("$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]\n\n");
+$t = parse("[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]");      $result = xpl($t); if ("$t" !== "[[3,[2,[8,0]]],[9,[5,[7,0]]]]") throw new Error("$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[7,0]]]]\n\n");
 
 function solvePart1($data) {
   $nrs = array_map(fn($x) => parse($x), $data);
@@ -243,11 +213,14 @@ function solvePart1($data) {
   while ($next = next($nrs)) {
     echo "  $current\n";
     echo "+ $next\n";
+    //echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth, $current->buildPairsList())) . "\n";
     $current = add($current, $next);
     echo "> $current\n";
-    echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth, $current->buildLeavesList())) . "\n";
+    echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth, $current->buildPairsList())) . "\n";
     reduce($current);
-    echo "= $current\n\n";
+    echo "= $current\n";
+    echo "  Depths => " . implode(", ", array_map(fn($x) => $x->depth, $current->buildPairsList())) . "\n";
+    echo "\n";
   }
   echo "Final result: $current\n";
 }
