@@ -296,41 +296,30 @@ function reduce($tree) {
   } while ($reduced);
 }
 
-// $t = parse("[[[1,1],[2,2]],[3,3]]");
-// echo "$t\n";
-// echo "  Depths => " . implode(", ", array_map(fn($x) => $x->depth(), $t->buildPairsList())) . "\n";
-// return 0;
-
-// Checks for explode
-// echo "---- EXPLOSION CHECKS ----\n";
-// $t = parse("[[[[[9,8],1],2],3],4]");                  $result = xpl($t); if ("$t" !== "[[[[0,9],2],3],4]") throw new Error("$result\n$t should be\n[[[[0,9],2],3],4]\n\n");
-// $t = parse("[7,[6,[5,[4,[3,2]]]]]");                  $result = xpl($t); if ("$t" !== "[7,[6,[5,[7,0]]]]") throw new Error("$result\n$t should be\n[7,[6,[5,[7,0]]]]\n\n");
-// $t = parse("[[6,[5,[4,[3,2]]]],1]");                  $result = xpl($t); if ("$t" !== "[[6,[5,[7,0]]],3]") throw new Error("$result\n$t should be\n[[6,[5,[7,0]]],3]\n\n");
-// $t = parse("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]");  $result = xpl($t); if ("$t" !== "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]") throw new Error("$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]\n\n");
-// $t = parse("[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]");      $result = xpl($t); if ("$t" !== "[[3,[2,[8,0]]],[9,[5,[7,0]]]]") throw new Error("$result\n$t should be\n[[3,[2,[8,0]]],[9,[5,[7,0]]]]\n\n");
-// echo "---- EXPLOSION CHECKS ----\n\n";
-
 function solvePart1($data) {
   $nrs = array_map(fn($x) => parse($x), $data);
   $current = $nrs[0];
   while ($next = next($nrs)) {
-    // echo "  $current\n";
-    // echo "+ $next\n";
-    // echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth(), $current->buildPairsList())) . "\n";
     $current = add($current, $next);
-    // echo "> $current\n";
-    // echo "Depths => " . implode(", ", array_map(fn($x) => $x->depth(), $current->buildPairsList())) . "\n";
     reduce($current);
-    // echo "= $current\n";
-    // echo "  Depths => " . implode(", ", array_map(fn($x) => $x->depth(), $current->buildPairsList())) . "\n";
-    // echo "\n";
   }
-  echo "Final result: $current\n";
   return $current->magnitude();
 }
 
 function solvePart2($data) {
-  return -1;
+  $largest = 0;
+  foreach ($data as $line1) {
+    // echo "Working on $line1\n";
+    foreach ($data as $line2) {
+      if ($line1 === $line2) continue;
+      $current = add(parse($line1), parse($line2));
+      reduce($current);
+      $mag = $current->magnitude();
+      $largest = max($mag, $largest);
+    }
+  }
+  
+  return $largest;
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
