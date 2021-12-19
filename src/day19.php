@@ -153,32 +153,64 @@ foreach ($data as $line) {
   if (empty($line)) {
     continue;
   }
-  else if (str_starts_with($line, "---")) {
+  else if (preg_match("/--- scanner (\d+) ---/", $line, $matches)) {
     $scanner = new Collection();
-    $scanners->push($scanner);
+    $scanners->put(intval($matches[1]), $scanner);
   }
-  else {
-    preg_match("/(-?\d+),(-?\d+),(-?\d+)/", $line, $matches);
-    $scanner->push([
-      $line,  // Save the string version for key purposes
+  else if (preg_match("/(-?\d+),(-?\d+),(-?\d+)/", $line, $matches)) {
+    $scanner->put($line, new Collection([
       intval($matches[1]),
       intval($matches[2]),
-      intval($matches[3])
-    ]);
+      intval($matches[3]),
+      $line,
+    ]));
+  }
+  else {
+    throw new Error("Parsing line failed");
   }
 }
 
-function solvePart1($data) {
+$data = $scanners;
+
+function solvePart1($scanners) {
   // Step 1: build list of distances
   // For each scanner
+  foreach ($scanners as $scannerKey => $scanner) {
     // For each beacon
+    foreach ($scanner as $beaconKey => $beacon) {
       // determine distances to each other beacon
+      $distances = new Collection();
+      $beacon->push($distances);
+
+      foreach ($scanner as $beaconKey2 => $beacon2) {
+        // manhattan:
+        // $distance = abs($beacon[0] - $beacon2[0]) + abs($beacon[1] - $beacon2[1]) + abs($beacon[2] - $beacon2[2]);
+        // regular:
+        $distance = round(sqrt(pow($beacon[0] - $beacon2[0], 2) + pow($beacon[1] - $beacon2[1], 2) + pow($beacon[2] - $beacon2[2], 2)), 10);
+
+        // echo "$scannerKey ........ ($beaconKey) => ($beaconKey2) == $distance\n";
+        $distances->push($distance);
+      }
+    }
+  }
 
   // Step 2: guess/determine overlaps
   // For each scanner COMBI
-    // For each beacon in scanner 1
-      // Find overlapping distances with beacons from scanner 2
-      // Print this shit out and see if this idea is gonna work
+  // Find overlapping distances with beacons
+  foreach ($scanners as $skey1 => $scanner1) {
+    foreach ($scanners as $skey2 => $scanner2) {
+      if ($skey1 === $skey2) continue;
+      
+      $permutations = $scanner1->crossJoin($scanner2);
+      foreach ($permutations as $p) {
+        if ($p[0][3] === $p[1][3]) continue;
+        $overlaps = $p[0][4]->intersect($p[1][4])->count(); // distinct distances that overlap
+        if ($overlaps > 4) {
+          echo "Scanner $skey1 beacon " . str_pad($p[0][3], 14) . "  -vs-  Scanner $skey2 beacon " . str_pad($p[1][3], 14) . "   => distances to other beacons overlap $overlaps times\n";
+        }
+      }
+    }
+  }
 
   // Step 3:
 
