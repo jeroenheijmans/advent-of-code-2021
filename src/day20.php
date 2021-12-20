@@ -150,18 +150,17 @@ foreach ($data as $line) {
   }
 }
 
-function solvePart1($algo, $img) {
-
-  echo "Loop nr zero\n-------------\n";
+function solvePart1($algo, $img, $loops) {
+  // echo "Loop nr zero\n-------------\n";
   // echo "\n" . printimg($img) . "\n";
 
-  for ($loop = 0; $loop < 2; $loop++) {
-    $miny = min(array_keys($img)) - 4;
-    $maxy = max(array_keys($img)) + 4;
-    $minx = min(array_keys($img[0])) - 4;
-    $maxx = max(array_keys($img[0])) + 4;
+  for ($loop = 0; $loop < $loops; $loop++) {
+    $miny = min(array_keys($img)) - 1;
+    $maxy = max(array_keys($img)) + 2;
+    $minx = min(array_keys($img[0])) - 1;
+    $maxx = max(array_keys($img[0])) + 2;
     
-    echo "Loop nr $loop\n-------------\n";
+    // echo "Loop nr $loop\n-------------\n";
 
     $newimg = [];
     for ($y = $miny; $y < $maxy; $y++) {
@@ -195,50 +194,5 @@ function solvePart1($algo, $img) {
   return lit($img);
 }
 
-function solvePart2($algo, $img) {
-
-  echo "Loop nr zero\n-------------\n";
-  // echo "\n" . printimg($img) . "\n";
-
-  for ($loop = 0; $loop < 50; $loop++) {
-    $miny = min(array_keys($img)) - 4;
-    $maxy = max(array_keys($img)) + 4;
-    $minx = min(array_keys($img[0])) - 4;
-    $maxx = max(array_keys($img[0])) + 4;
-    
-    echo "Loop nr $loop\n-------------\n";
-
-    $newimg = [];
-    for ($y = $miny; $y < $maxy; $y++) {
-      for ($x = $minx; $x < $maxx; $x++) {
-
-        $pattern = "";
-
-        if (array_key_exists($y-1, $img) && array_key_exists($x-1, $img[$y-1])) $pattern .= $img[$y-1][$x-1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y-1, $img) && array_key_exists($x  , $img[$y-1])) $pattern .= $img[$y-1][$x  ]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y-1, $img) && array_key_exists($x+1, $img[$y-1])) $pattern .= $img[$y-1][$x+1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y  , $img) && array_key_exists($x-1, $img[$y  ])) $pattern .= $img[$y  ][$x-1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y  , $img) && array_key_exists($x  , $img[$y  ])) $pattern .= $img[$y  ][$x  ]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y  , $img) && array_key_exists($x+1, $img[$y  ])) $pattern .= $img[$y  ][$x+1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y+1, $img) && array_key_exists($x-1, $img[$y+1])) $pattern .= $img[$y+1][$x-1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y+1, $img) && array_key_exists($x  , $img[$y+1])) $pattern .= $img[$y+1][$x  ]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-        if (array_key_exists($y+1, $img) && array_key_exists($x+1, $img[$y+1])) $pattern .= $img[$y+1][$x+1]; else $pattern .= $loop % 2 === 0 ? "0" : "1";
-
-        // echo "Pattern: $pattern for y=$y and x=$x\n";
-        $number = bindec($pattern);
-        $newchar = substr($algo, $number, 1);
-
-        if (!array_key_exists($y, $newimg)) $newimg[$y] = [];
-        $newimg[$y][$x] = $newchar;
-        
-      }
-    }
-    // echo "\n" . printimg($newimg) . "\n";
-    $img = $newimg;
-  }
-
-  return lit($img);
-}
-
-echo "Solution 1: " . solvePart1($algo, $img) . "\n";
-echo "Solution 2: " . solvePart2($algo, $img) . "\n";
+echo "Solution 1: " . solvePart1($algo, $img, 2) . "\n";
+echo "Solution 2: " . solvePart1($algo, $img, 50) . "\n";
