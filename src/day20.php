@@ -145,12 +145,15 @@ foreach ($data as $line) {
 
 function solvePart1($algo, $img) {
 
-  $minx = min(array_keys($img)) - 4;
-  $maxx = max(array_keys($img)) + 5;
-  $miny = min(array_keys($img[0])) - 4;
-  $maxy = max(array_keys($img[0])) + 5;
+  echo "Loop nr zero\n-------------\n";
+  echo "\n" . printimg($img) . "\n";
 
   for ($loop = 0; $loop < 2; $loop++) {
+    $miny = min(array_keys($img)) - 1;
+    $maxy = max(array_keys($img)) + 2;
+    $minx = min(array_keys($img[0])) - 1;
+    $maxx = max(array_keys($img[0])) + 2;
+    
     echo "Loop nr $loop\n-------------\n";
 
     $newimg = [];
