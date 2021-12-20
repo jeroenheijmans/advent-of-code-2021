@@ -145,17 +145,17 @@ foreach ($data as $line) {
 
 function solvePart1($algo, $img) {
 
-  $minx = 0;
-  $maxx = count($img[0]);
-  $miny = 0;
-  $maxy = count($img);
+  $minx = min(array_keys($img)) - 4;
+  $maxx = max(array_keys($img)) + 5;
+  $miny = min(array_keys($img[0])) - 4;
+  $maxy = max(array_keys($img[0])) + 5;
 
   for ($loop = 0; $loop < 2; $loop++) {
     echo "Loop nr $loop\n-------------\n";
 
     $newimg = [];
-    for ($y = -2; $y < $maxy + 2; $y++) {
-      for ($x = -2; $x < $maxx + 2; $x++) {
+    for ($y = $miny; $y < $maxy; $y++) {
+      for ($x = $minx; $x < $maxx; $x++) {
 
         $pattern = "";
 
@@ -181,7 +181,6 @@ function solvePart1($algo, $img) {
     }
     echo "\n" . printimg($newimg) . "\n";
     $img = $newimg;
-      // TODO: increase min/max
   }
 
   return lit($img);
