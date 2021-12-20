@@ -201,14 +201,17 @@ function solvePart1($scanners) {
     foreach ($scanners as $skey2 => $scanner2) {
       if ($skey1 === $skey2) continue;
       
+      $overlappingbeacons = [];
       $permutations = $scanner1->crossJoin($scanner2);
       foreach ($permutations as $p) {
         if ($p[0][3] === $p[1][3]) continue;
         $overlaps = $p[0][4]->intersect($p[1][4])->count(); // distinct distances that overlap
-        if ($overlaps > 4) {
-          echo "Scanner $skey1 beacon " . str_pad($p[0][3], 14) . "  -vs-  Scanner $skey2 beacon " . str_pad($p[1][3], 14) . "   => distances to other beacons overlap $overlaps times\n";
+        if ($overlaps >= 2) {
+          // echo "Scanner $skey1 beacon " . str_pad($p[0][3], 14) . "  -vs-  Scanner $skey2 beacon " . str_pad($p[1][3], 14) . "   => distances to other beacons overlap $overlaps times\n";
+          array_push($overlappingbeacons, $p[0][3]);
         }
       }
+      echo "Scanner $skey1 overlapping beacons with $skey2: " . count(array_unique($overlappingbeacons)) . "\n";
     }
   }
 
