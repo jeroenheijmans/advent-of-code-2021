@@ -14,25 +14,23 @@ function solvePart1() {
   $score1 = 0;
   $score2 = 0;
 
-  for ($round = 1; $round < 1000; $round++) {
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p1 += ($die % 10); if ($p1 > 10) $p1 -= 10;
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p1 += ($die % 10); if ($p1 > 10) $p1 -= 10;
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p1 += ($die % 10); if ($p1 > 10) $p1 -= 10;
-    $score1 += $p1; 
-    
+  while (true) {
+    for ($i=0; $i<3; $i++) {
+      if (++$die === 101) $die = 1;
+      $rolls++;
+      $p1 += ($die % 10);
+      if ($p1 > 10) $p1 -= 10;
+    }
+    $score1 += $p1;
     if ($score1 >= 1000) break;
 
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p2 += ($die % 10); if ($p2 > 10) $p2 -= 10;
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p2 += ($die % 10); if ($p2 > 10) $p2 -= 10;
-    if (++$die === 101) $die = 1; $rolls++; 
-    $p2 += ($die % 10); if ($p2 > 10) $p2 -= 10;
-    $score2 += $p2; 
-
+    for ($i=0; $i<3; $i++) {
+      if (++$die === 101) $die = 1;
+      $rolls++;
+      $p2 += ($die % 10);
+      if ($p2 > 10) $p2 -= 10;
+    }
+    $score2 += $p2;
     if ($score2 >= 1000) break;
   }
 
