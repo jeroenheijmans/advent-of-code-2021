@@ -60,8 +60,23 @@ function solvePart1($data) {
   return count(array_filter($lit, fn($p) => $p));
 }
 
+class Cube {
+  function __construct(
+    public $on = "on",
+    public $from = [],
+    public $to = [],
+  ) {}
+
+  public function combine($other) {
+    // TODO: combine them into new cubes
+    return [];
+  }
+}
+
 function solvePart2($data) {
-  $lit = [];
+  $cubes = new Collection([
+    new Cube("off", [PHP_INT_MIN, PHP_INT_MIN, PHP_INT_MIN], [PHP_INT_MAX, PHP_INT_MAX, PHP_INT_MAX]),
+  ]);
 
   foreach ($data as $line) {
     preg_match("/(\S+) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)/", $line, $matches);
@@ -73,10 +88,18 @@ function solvePart2($data) {
     $z1 = intval($matches[6]);
     $z2 = intval($matches[7]);
 
+    $newCube = new Cube($instruction, [$x1, $y1, $z1], [$x2, $y2, $z2]);
+    $newCubes = new Collection([$newCube]);
     
+    foreach($cubes as $otherCube) {
+      $results = $otherCube->combine($newCube);
+      $newCubes->concat($results);
+    }
+
+    $cubes = $newCubes;
   }
 
-  return -1;
+  return -1; // TODO: Count how many cubes fall in "on" areas
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
