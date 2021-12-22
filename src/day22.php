@@ -6,26 +6,28 @@ use Illuminate\Support\Collection;
 function collect($value = null) { return new Collection($value); }
 
 $input = "
-on x=-24..25,y=-36..8,z=-15..31
-on x=-3..41,y=-15..30,z=-26..18
-on x=0..45,y=-13..41,z=-13..32
-on x=-48..-4,y=-6..39,z=-49..-1
-on x=-40..12,y=-11..33,z=-24..28
-on x=-40..7,y=-6..40,z=-25..20
-on x=-16..29,y=-43..3,z=-23..25
-on x=-20..33,y=-6..39,z=-2..49
-on x=-46..5,y=-8..46,z=-1..44
-on x=-29..18,y=-27..17,z=-32..22
-off x=-39..-20,y=-32..-18,z=36..47
-on x=-22..27,y=-5..42,z=-45..0
-off x=-23..-6,y=29..40,z=-43..-26
-on x=-29..21,y=-25..23,z=-9..38
-off x=-45..-29,y=-6..12,z=-31..-19
-on x=-12..35,y=-7..43,z=-21..27
-off x=30..46,y=20..29,z=-3..15
-on x=-11..37,y=0..44,z=-39..7
-off x=17..35,y=-48..-38,z=-30..-21
-on x=-18..27,y=-46..2,z=-5..48
+on x=-20..26,y=-36..17,z=-47..7
+on x=-20..33,y=-21..23,z=-26..28
+on x=-22..28,y=-29..23,z=-38..16
+on x=-46..7,y=-6..46,z=-50..-1
+on x=-49..1,y=-3..46,z=-24..28
+on x=2..47,y=-22..22,z=-23..27
+on x=-27..23,y=-28..26,z=-21..29
+on x=-39..5,y=-6..47,z=-3..44
+on x=-30..21,y=-8..43,z=-13..34
+on x=-22..26,y=-27..20,z=-29..19
+off x=-48..-32,y=26..41,z=-47..-37
+on x=-12..35,y=6..50,z=-50..-2
+off x=-48..-32,y=-32..-16,z=-15..-5
+on x=-18..26,y=-33..15,z=-7..46
+off x=-40..-22,y=-38..-28,z=23..41
+on x=-16..35,y=-41..10,z=-47..6
+off x=-32..-23,y=11..30,z=-14..3
+on x=-49..-5,y=-3..45,z=-29..18
+off x=18..30,y=-20..-8,z=-3..13
+on x=-41..9,y=-7..43,z=-33..15
+on x=-54112..-39298,y=-85059..-49293,z=-27449..7877
+on x=967..23432,y=45373..81175,z=27513..53682
 ";
 
 $data = preg_split("/\r?\n/", trim($input));
@@ -46,12 +48,10 @@ function solvePart1($data) {
     $p1 = "$x1;$y1;$z1";
     $p2 = "$x2;$y2;$z2";
 
-    for ($x = min($x1, $x2); $x <= max($x1, $x2); $x++) {
-      for ($y = min($y1, $y2); $y <= max($y1, $y2); $y++) {
-        for ($z = min($z1, $z2); $z <= max($z1, $z2); $z++) {
-          $p = "$x;$y;$z";
-          $lit[$p] = $instruction === "on" ? true : false;
-          //if ($lit[$p]) echo "$p is on\n";
+    for ($x = max(-50, min($x1, $x2)); $x <= min(50, max($x1, $x2)); $x++) {
+      for ($y = max(-50, min($y1, $y2)); $y <= min(50, max($y1, $y2)); $y++) {
+        for ($z = max(-50, min($z1, $z2)); $z <= min(50, max($z1, $z2)); $z++) {
+          $lit["$x;$y;$z"] = $instruction === "on" ? true : false;
         }
       }
     }
@@ -61,6 +61,21 @@ function solvePart1($data) {
 }
 
 function solvePart2($data) {
+  $lit = [];
+
+  foreach ($data as $line) {
+    preg_match("/(\S+) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)/", $line, $matches);
+    $instruction = $matches[1];
+    $x1 = intval($matches[2]);
+    $x2 = intval($matches[3]);
+    $y1 = intval($matches[4]);
+    $y2 = intval($matches[5]);
+    $z1 = intval($matches[6]);
+    $z2 = intval($matches[7]);
+
+    
+  }
+
   return -1;
 }
 
