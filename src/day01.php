@@ -2003,9 +2003,9 @@ $input = "
 3798
 ";
 
-$data = array_map('intval', preg_split("/\r?\n/", trim($input)));
+$data = array_map(intval(...), explode(PHP_EOL, trim($input)));
 
-function solvePart1($data) {
+function solvePart1(array $data): int {
   $answer = 0;
   $prev = $data[0];
   foreach ($data as $x) {
@@ -2015,12 +2015,11 @@ function solvePart1($data) {
   return $answer;
 }
 
-function solvePart2($data) {
+function solvePart2(array $data): int {
   $answer = 0;
-  for ($i = 0; $i < count($data) - 3; $i++) {
-    $x = $data[$i+0] + $data[$i+1] + $data[$i+2];
-    $y = $data[$i+1] + $data[$i+2] + $data[$i+3];
-    if ($y > $x) $answer++;
+  $size = count($data);
+  for ($i = 0; $i < $size - 3; $i++) {
+    if ($data[$i+3] > $data[$i]) $answer++;
   }
   return $answer;
 }

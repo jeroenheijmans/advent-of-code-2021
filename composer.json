@@ -1,5 +1,13 @@
 {
     "require": {
         "illuminate/collections": "^8.75"
+    },
+    "require-dev": {
+        "phpbench/phpbench": "^1.2"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
 }
