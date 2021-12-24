@@ -280,11 +280,9 @@ function runProgram($program, $inputs) {
   $inputPos = 0;
 
   $pos = 0;
-  $loop = 0;
-  $MaxLoopCount = 1000;
   $maxpos = count($program);
 
-  while ($loop++ < $MaxLoopCount) {
+  while (true) {
     // echo $program[$pos][0] . "\n"; print_r($memory);
 
     switch ($program[$pos][0]) {
@@ -334,24 +332,23 @@ function runProgram($program, $inputs) {
     }
   }
 
+  // echo $memory["z"] . "\n";
   return $memory["z"];
 }
 
 function solvePart1($program): int {
 
-  $result = runProgram($program, [1,3,5,7,9,2,4,6,8,9,9,9,9,9]);
-  echo "Valid? $result\n";
-
   $inputs = 99999999999999;
   $loop = 0;
   do {
     while (str_contains("$inputs", "0")) $inputs--;
-    echo "Checking $inputs\n";
+    if ($loop % 100000 === 0) echo "Time: " . date("H:i:s", time()) . " Loop $loop checking $inputs\n";
     $input = array_map(intval(...), str_split("$inputs"));
     $result = runProgram($program, $input);
-    if ($result === 1) break;
+    if ($result === 0) break;
 
-  } while (--$inputs > 0 && $loop++ < 10000);
+    if ($loop++ > 1000000000) { echo "Early exit for safety!\n"; break; }
+  } while (--$inputs > 0);
 
   return $inputs;
 }
