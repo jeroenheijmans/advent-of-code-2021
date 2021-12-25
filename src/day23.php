@@ -15,75 +15,47 @@ $input = "
 
 $data = array_map(fn($x) => str_split($x), preg_split("/\r?\n/", trim($input)));
 
-class Pawn {
-  function __construct(
-    public $color,
-  ) {
-    if ($color === "A") $this->step = 1;
-    if ($color === "B") $this->step = 10;
-    if ($color === "C") $this->step = 100;
-    if ($color === "D") $this->step = 1000;
-  }
-}
-
 class Location {
   function __construct(
-    public $coords,
-    public $targetFor,
-    public $isStop = false,
-    public $pawn = null,
-  ) {}
+    public $y,
+    public $x,
+    public $pawn = ".",
+  ) {
+
+  }
 }
 
-function printlevel($locations) {
+$level = new Collection();
+for ($y = 1; $y < 4; $y++) {
+  for ($x = 1; $x < 12; $x++) {
+    if (!array_key_exists($x, $data[$y])) continue;
+    if ($data[$y][$x] === ".") $level->push(new Location($y, $x));
+    if (ctype_alpha($data[$y][$x])) $level->push(new Location($y, $x, $data[$y][$x]));
+  }
+}
+
+function printlevel($level) {
   for ($y = 0; $y < 5; $y++) {
-    for ($x = 0; $x < 13; $x++) {
-      $location = $locations->get("$y,$x");
-      if ($location !== null) echo $location->pawn?->color ?? "·";
-      else echo " ";
-    }
     echo "\n";
-  }
-}
-
-function solvePart1($data) {
-  $locations = new Collection();
-  for ($y = 1; $y < 4; $y++) {
-    for ($x = 1; $x < 12; $x++) {
-      if (!array_key_exists($x, $data[$y])) continue;
-      if (preg_match("/[.ABCD]/", $data[$y][$x])) {
-        $targetFor = ($x === 3 && $y > 1) ? "A" : null;
-        $targetFor = ($x === 5 && $y > 1) ? "B" : null;
-        $targetFor = ($x === 7 && $y > 1) ? "C" : null;
-        $targetFor = ($x === 9 && $y > 1) ? "D" : null;
-
-        $isStop = $y > 1 && ($x === 3 || $x === 5 || $x === 7 || $x === 9);
-
-        $pawn = preg_match("/[ABCD]/", $data[$y][$x])
-          ? new Pawn($data[$y][$x])
-          : null;
-
-        $locations->put(
-          "$y,$x",
-          new Location(
-            [$y, $x],
-            $targetFor,
-            $isStop,
-            $pawn
-          )
-        );
-      }
+    for ($x = 0; $x < 13; $x++) {
+      if ($y > 2 && $x < 2) { echo " "; continue; }
+      if ($y > 2 && $x > 10) { echo " "; continue; }
+      $loc = $level->filter(fn($i) => $i->x === $x && $i->y === $y)->first();
+      echo $loc ? $loc->pawn : "#";
     }
   }
+  echo "\n";
+}
 
-  printlevel($locations);
+printlevel($level);
 
+function solvePart1($level) {
   return -1;
 }
 
-function solvePart2($data) {
+function solvePart2($level) {
   return -1;
 }
 
-echo "Solution 1: " . solvePart1($data) . "\n";
-echo "Solution 2: " . solvePart2($data) . "\n";
+echo "Solution 1: " . solvePart1($level) . "\n";
+echo "Solution 2: " . solvePart2($level) . "\n";
