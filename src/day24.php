@@ -269,6 +269,28 @@ foreach (explode(PHP_EOL, trim($input)) as $line) {
 
 $data = array_map(intval(...), explode(PHP_EOL, trim($input)));
 
+// Trying to 'compile' instructions into
+function subProgramFirstDigit($w, $x, $y, $z) {
+
+  if ((($z % 26) + 13) === $w) 
+    return 0; // z
+
+  return
+    ($z * 26 * $x)
+    +
+    (($w + 6) * $x);
+}
+
+function subProgramLastDigit($w, $z) {
+  // inp w
+  $x = $z % 26;
+  $z = floor($z / 26);
+  
+  $x = $x===$w ? 0 : 1;
+
+  $z = ($z * 26 * $x) + (($w + 10) * $x);
+}
+
 function runProgram($program, $inputs) {
   $memory = [
     "w" => 0,
@@ -283,9 +305,6 @@ function runProgram($program, $inputs) {
   $maxpos = count($program);
 
   while (true) {
-    $paddedVals = array_map(fn($x) => str_pad($x, 12, " ", STR_PAD_LEFT), array_values($memory));
-    $line = $program[$pos][0] . " " . $program[$pos][1] . " " . (array_key_exists(2, $program[$pos]) ? $program[$pos][2] : " ");
-    echo implode("", $paddedVals) . "          => " . $line . "\n";
 
     switch ($program[$pos][0]) {
       case "inp":
@@ -326,10 +345,15 @@ function runProgram($program, $inputs) {
           break;
     }
 
+    $paddedVals = array_map(fn($x) => str_pad($x, 12, " ", STR_PAD_LEFT), array_values($memory));
+    $line = $program[$pos][0] . " " . $program[$pos][1] . " " . (array_key_exists(2, $program[$pos]) ? $program[$pos][2] : " ");
+    echo $program[$pos][0] === "inp" ? "\n" : "";
+    echo implode("", $paddedVals) . "           " . $line . "\n";
+
     $pos++;
 
     if ($pos >= $maxpos) {
-      throw new Error("Crashed");
+      break;
     }
   }
 
