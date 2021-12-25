@@ -283,7 +283,9 @@ function runProgram($program, $inputs) {
   $maxpos = count($program);
 
   while (true) {
-    // echo $program[$pos][0] . "\n"; print_r($memory);
+    $paddedVals = array_map(fn($x) => str_pad($x, 12, " ", STR_PAD_LEFT), array_values($memory));
+    $line = $program[$pos][0] . " " . $program[$pos][1] . " " . (array_key_exists(2, $program[$pos]) ? $program[$pos][2] : " ");
+    echo implode("", $paddedVals) . "          => " . $line . "\n";
 
     switch ($program[$pos][0]) {
       case "inp":
@@ -327,18 +329,16 @@ function runProgram($program, $inputs) {
     $pos++;
 
     if ($pos >= $maxpos) {
-      // echo "Terminated program!\n";
-      break;
+      throw new Error("Crashed");
     }
   }
 
-  // echo $memory["z"] . "\n";
   return $memory["z"];
 }
 
 function solvePart1($program): int {
 
-  $inputs = 99999999999999;
+  $inputs = 12345678999999;
   $loop = 0;
   do {
     while (str_contains("$inputs", "0")) $inputs--;
@@ -348,6 +348,7 @@ function solvePart1($program): int {
     if ($result === 0) break;
 
     if ($loop++ > 1000000000) { echo "Early exit for safety!\n"; break; }
+    break;
   } while (--$inputs > 0);
 
   return $inputs;
