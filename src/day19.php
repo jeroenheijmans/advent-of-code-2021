@@ -263,7 +263,7 @@ function solvePart2($scanners, $sets) {
   $loop = 0;
 
   while (!$scannersToDo->isEmpty()) {
-    if ($loop++ > 100) throw new Error("Too many loops, got a bug?");
+    if ($loop++ > 1000) throw new Error("Too many loops, got a bug?");
     // echo "Loop $loop need to do: [" . implode(",", $scannersToDo->toArray()) . "]\n";
 
     foreach ($origins->keys() as $skeySource) {
@@ -320,9 +320,7 @@ function solvePart2($scanners, $sets) {
 
     $foundit = false;
     foreach ($axoptions as $ax) {
-      if ($foundit) break;
       foreach ($diroptions as $dir) {
-        if ($foundit) break;
         $origin2 = null;
 
         foreach ($sets as $set) {
@@ -338,18 +336,18 @@ function solvePart2($scanners, $sets) {
           $beacon2 = [intval($matches2[1]), intval($matches2[2]), intval($matches2[3])];
 
           $supposedOrigin = [
-            "x" => $origin1["x"] + ($beacon1[$axesPerScanner[$skeySource]["x"]] * $dirsPerScanner[$skeySource]["x"]) + ($beacon2[$ax["x"]] * $dir["x"]),
-            "y" => $origin1["y"] + ($beacon1[$axesPerScanner[$skeySource]["y"]] * $dirsPerScanner[$skeySource]["y"]) + ($beacon2[$ax["y"]] * $dir["y"]),
-            "z" => $origin1["z"] + ($beacon1[$axesPerScanner[$skeySource]["z"]] * $dirsPerScanner[$skeySource]["z"]) + ($beacon2[$ax["z"]] * $dir["z"]),
+            "x" => $origin1["x"] + ($beacon1[$axesPerScanner[$skeySource]["x"]] * $dirsPerScanner[$skeySource]["x"]) - ($beacon2[$ax["x"]] * $dir["x"]),
+            "y" => $origin1["y"] + ($beacon1[$axesPerScanner[$skeySource]["y"]] * $dirsPerScanner[$skeySource]["y"]) - ($beacon2[$ax["y"]] * $dir["y"]),
+            "z" => $origin1["z"] + ($beacon1[$axesPerScanner[$skeySource]["z"]] * $dirsPerScanner[$skeySource]["z"]) - ($beacon2[$ax["z"]] * $dir["z"]),
           ];
 
           if ($origin2 === null) {
             $origin2 = $supposedOrigin;
+          } else if ($origin2 !== $supposedOrigin) {
+            $origin2 = null;
+            break;
           } else {
-            if ($origin2 !== $supposedOrigin) {
-              $origin2 = null;
-              break;
-            }
+            // Keep going. Seems we have the right origin according to this next beacon.
           }
         }
 
@@ -362,11 +360,15 @@ function solvePart2($scanners, $sets) {
           $dirsPerScanner[$skeyTarget] = $dir;
           $foundit = true; // Haha yikes...
         }
+        
+        if ($foundit) break;
       }
+      if ($foundit) break;
     }
   }
 
-  print_r(array_map(fn($x) => implode(",", $x), $axesPerScanner));
+  // print_r(array_map(fn($x) => implode(",", $x), $dirsPerScanner));
+  // print_r(array_map(fn($x) => implode(",", $x), $axesPerScanner));
   print_r($origins->map(fn($o) => implode(",", $o))->toArray());
 
   $maxdist = 0;
