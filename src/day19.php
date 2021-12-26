@@ -1138,7 +1138,7 @@ function solvePart2($scanners, $sets) {
       }
     }
 
-    echo "Fixating from source $skeySource to target $skeyTarget (got " . count($origins) . " origins so far)\n";
+    // echo "Fixating from source $skeySource to target $skeyTarget (got " . count($origins) . " origins so far)\n";
 
     $axoptions = [
       ["x" => 0, "y" => 1, "z" => 2],
@@ -1222,8 +1222,8 @@ function solvePart2($scanners, $sets) {
   //print_r(array_map(fn($x) => implode(",", $x), $dirsPerScanner));
   //echo "Axes: \n";
   //print_r(array_map(fn($x) => implode(",", $x), $axesPerScanner));
-  echo "Origins:\n";
-  print_r($origins->sortKeys()->map(fn($o) => implode(",", $o))->toArray());
+  // echo "Origins:\n";
+  // print_r($origins->sortKeys()->map(fn($o) => implode(",", $o))->toArray());
   //echo "Sets:\n";
   //print_r($sets->toArray());
 
@@ -1245,4 +1245,4 @@ $answer1 = $sets->count();
 // print_r($sets->map(fn($x) => $x->toArray())->toArray());
 
 echo "Solution 1: " . $answer1 . "\n";
-echo "Solution 2: " . solvePart2($data, $sets) . "\n";
+echo "Solution 2: " . solvePart2($data, $sets) . " (<< careful, this took some guesswork in the code so it's not reliable for other inputs.\n";
