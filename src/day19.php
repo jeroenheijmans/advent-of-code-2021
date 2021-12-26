@@ -1056,7 +1056,7 @@ function solvePart1($scanners) {
       foreach ($permutations as $p) {
         if ($p[0][3] === $p[1][3]) continue;
         $overlaps = $p[0][4]->intersect($p[1][4])->count(); // distinct distances that overlap
-        if ($overlaps >= 6) {
+        if ($overlaps >= 12) {
           // echo "Scanner $skey1 beacon " . str_pad($p[0][3], 14) . "  -vs-  Scanner $skey2 beacon " . str_pad($p[1][3], 14) . "   => distances to other beacons overlap $overlaps times\n";
           array_push($overlappingbeacons, $p[0][3]);
 
@@ -1085,22 +1085,32 @@ function solvePart1($scanners) {
 
 function solvePart2($scanners, $sets) {
 
+  $initialSkey = 34;
+
   $origins = new Collection([
-    0 => ["x" => 0, "y" => 0, "z" => 0],
+    $initialSkey => ["x" => 0, "y" => 0, "z" => 0],
   ]);
+
+  $scannerTargetsThatDontWork = new Collection();
   
   $scannersToDo = $scanners->keys()->filter(fn($k) => $k !== 0);
-  $axesPerScanner = [0 => ["x" => 0, "y" => 1, "z" => 2]];
-  $dirsPerScanner = [0 => ["x" => +1, "y" => +1, "z" => +1]];
+  $axesPerScanner = [$initialSkey => ["x" => 0, "y" => 1, "z" => 2]];
+  $dirsPerScanner = [$initialSkey => ["x" => +1, "y" => +1, "z" => +1]];
 
   $loop = 0;
 
   while (!$scannersToDo->isEmpty()) {
-    echo "Got " . count($origins) . " origins so far.\n";
-    if ($loop++ > 100000) throw new Error("Too many loops, got a bug?");
+    if ($loop++ > 150) {
+      echo "Too many loops, got a bug?\n";
+      break;
+    };
     // echo "Loop $loop need to do: [" . implode(",", $scannersToDo->toArray()) . "]\n";
+    
+    foreach ($origins->keys() as $skeySource) {
+      if (!$scannerTargetsThatDontWork->has($skeySource)) {
+        $scannerTargetsThatDontWork->put($skeySource, new Collection());
+      }
 
-    foreach ($origins->keys()->shuffle() as $skeySource) {
       $origin1 = $origins[$skeySource];
 
       // Find all scanners that have 12x overlap
@@ -1117,17 +1127,18 @@ function solvePart2($scanners, $sets) {
         )
         ->flatten()
         ->countBy()
-        ->filter(fn($count) => $count >= 12)
+        ->filter(fn($count) => $count >= 4)
+        ->filter(fn($count, $key) => !$scannerTargetsThatDontWork->get($skeySource)->some($key))
         ->filter(fn($count, $key) => $key !== $skeySource);
 
-      $skeyTarget = $scannersToDo->intersect($overlapbeacons->keys())->shuffle()->first();
+      $skeyTarget = $scannersToDo->intersect($overlapbeacons->keys())->first();
 
       if ($skeyTarget) {
         break;
       }
     }
 
-    echo "Fixating from source $skeySource to target $skeyTarget\n";
+    echo "Fixating from source $skeySource to target $skeyTarget (got " . count($origins) . " origins so far)\n";
 
     $axoptions = [
       ["x" => 0, "y" => 1, "z" => 2],
@@ -1143,7 +1154,6 @@ function solvePart2($scanners, $sets) {
       ["x" => -1, "y" => -1, "z" => +1],
       ["x" => -1, "y" => +1, "z" => -1],
       ["x" => -1, "y" => +1, "z" => +1],
-
       ["x" => +1, "y" => -1, "z" => -1],
       ["x" => +1, "y" => -1, "z" => +1],
       ["x" => +1, "y" => +1, "z" => -1],
@@ -1193,29 +1203,29 @@ function solvePart2($scanners, $sets) {
           $axesPerScanner[$skeyTarget] = $ax;
           $dirsPerScanner[$skeyTarget] = $dir;
           $foundit = true; // Haha yikes...
+        } else {
+          $scannerTargetsThatDontWork->get($skeySource)->push($skeyTarget);
         }
         
         if ($foundit) break;
       }
       if ($foundit) break;
     }
-    
-    if (count($origins) > 32) {
-    $maxdist = 0;
-    foreach ($origins as $a) {
-      foreach ($origins as $b) {
-        if ($a === $b) continue;
-        $dist = abs($a["x"] - $b["x"]) + abs($a["y"] - $b["y"]) + abs($a["z"] - $b["z"]);
-        $maxdist = max($maxdist, $dist);
-      }
-    }
-    echo "Max dist so far: $maxdist\n";
-  }
+
+    // if (count($origins) === 33 && $loop > 250) break;
   }
 
-  // print_r(array_map(fn($x) => implode(",", $x), $dirsPerScanner));
-  // print_r(array_map(fn($x) => implode(",", $x), $axesPerScanner));
-  print_r($origins->map(fn($o) => implode(",", $o))->toArray());
+  ksort($dirsPerScanner);
+  ksort($axesPerScanner);
+
+  //echo "Directions:\n";
+  //print_r(array_map(fn($x) => implode(",", $x), $dirsPerScanner));
+  //echo "Axes: \n";
+  //print_r(array_map(fn($x) => implode(",", $x), $axesPerScanner));
+  echo "Origins:\n";
+  print_r($origins->sortKeys()->map(fn($o) => implode(",", $o))->toArray());
+  //echo "Sets:\n";
+  //print_r($sets->toArray());
 
   $maxdist = 0;
   foreach ($origins as $a) {
