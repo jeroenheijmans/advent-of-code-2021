@@ -33,8 +33,8 @@ Some learned lesson for each day:
 16. **Reading comprehension is tough.**
 17. Devils live in details.
 18. _"I have no time to go fast!"_
-19. TODO
-20. TODO
+19. Persistence is key.
+20. Ugly code can be pragmatic code.
 21. TODO
 22. TODO
 23. TODO
