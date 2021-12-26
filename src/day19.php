@@ -1085,7 +1085,7 @@ function solvePart1($scanners) {
 
 function solvePart2($scanners, $sets) {
 
-  $initialSkey = 34;
+  $initialSkey = 32;
 
   $origins = new Collection([
     $initialSkey => ["x" => 0, "y" => 0, "z" => 0],
