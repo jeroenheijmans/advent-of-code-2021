@@ -241,7 +241,7 @@ function solvePart1($scanners) {
 function solvePart2($scanners, $sets) {
 
   $origins = new Collection([
-    0 => [0, 0, 0],
+    0 => ["x" => 0, "y" => 0, "z" => 0],
   ]);
   
   $scannersToDo = $scanners->keys()->filter(fn($k) => $k !== 0);
@@ -250,6 +250,8 @@ function solvePart2($scanners, $sets) {
 
   while ($loop++ < 100 && !$scannersToDo->isEmpty()) {
     foreach ($origins->keys() as $skeySource) {
+      $origin1 = $origins[$skeySource];
+
       // Find all scanners that have 12x overlap
       $overlapbeacons = $sets
         ->filter(fn($bs) =>
@@ -273,14 +275,90 @@ function solvePart2($scanners, $sets) {
         break;
       }
     }
-    
+
     echo "Fixating from source $skeySource to target $skeyTarget\n";
 
-    // TODO
+    $axoptions = [
+      ["x" => 0, "y" => 1, "z" => 2],
+      ["x" => 0, "y" => 2, "z" => 1],
+      ["x" => 1, "y" => 0, "z" => 2],
+      ["x" => 1, "y" => 2, "z" => 0],
+      ["x" => 2, "y" => 0, "z" => 1],
+      ["x" => 2, "y" => 1, "z" => 0],
+    ];
+
+    $diroptions = [
+      ["x" => -1, "y" => -1, "z" => -1],
+      ["x" => -1, "y" => -1, "z" => +1],
+      ["x" => -1, "y" => +1, "z" => -1],
+      ["x" => -1, "y" => +1, "z" => +1],
+
+      ["x" => +1, "y" => -1, "z" => -1],
+      ["x" => +1, "y" => -1, "z" => +1],
+      ["x" => +1, "y" => +1, "z" => -1],
+      ["x" => +1, "y" => +1, "z" => +1],
+    ];
+
+    // TODO: 6 axoptions * 8 diroptions = 48 options, 2x too much? what gives?!
+
+    $foundit = false;
+    foreach ($axoptions as $ax) {
+      if ($foundit) break;
+      foreach ($diroptions as $dir) {
+        if ($foundit) break;
+        $origin2 = null;
+
+        foreach ($sets as $set) {
+          $item1 = $set->first(fn($b) => str_starts_with($b, "Scanner::$skeySource"));
+          $item2 = $set->first(fn($b) => str_starts_with($b, "Scanner::$skeyTarget"));
+
+          if (!$item1 || !$item2) continue;
+
+          preg_match("/beacon::(.+),(.+),(.+)/", $item1, $matches1);
+          preg_match("/beacon::(.+),(.+),(.+)/", $item2, $matches2);
+
+          $beacon1 = [intval($matches1[1]), intval($matches1[2]), intval($matches1[3])];
+          $beacon2 = [intval($matches2[1]), intval($matches2[2]), intval($matches2[3])];
+
+          $supposedOrigin = [
+            "x" => $origin1["x"] + $beacon1[0] + ($beacon2[$ax["x"]] * $dir["x"]),
+            "y" => $origin1["y"] + $beacon1[1] + ($beacon2[$ax["y"]] * $dir["y"]),
+            "z" => $origin1["z"] + $beacon1[2] + ($beacon2[$ax["z"]] * $dir["z"]),
+          ];
+
+          if ($origin2 === null) {
+            $origin2 = $supposedOrigin;
+          } else {
+            if ($origin2 !== $supposedOrigin) {
+              $origin2 = null;
+              break;
+            }
+          }
+        }
+
+        if ($origin2 !== null) {
+          // echo "Found it!\n";
+          // print_r($origin2);
+          $origins->put($skeyTarget, $origin2);
+          $scannersToDo = $scannersToDo->filter(fn($s) => $s !== $skeyTarget);
+          $foundit = true; // Haha yikes...
+        }
+      }
+    }
   }
 
+  print_r($origins->toArray());
 
-  return -1;
+  $maxdist = 0;
+  foreach ($origins as $a) {
+    foreach ($origins as $b) {
+      if ($a === $b) continue;
+      $dist = abs($a["x"] - $b["x"]) + abs($a["y"] - $b["y"]) + abs($a["z"] - $b["z"]);
+      $maxdist = max($maxdist, $dist);
+    }
+  }
+
+  return $maxdist;
 }
 
 $sets = solvePart1($data);
