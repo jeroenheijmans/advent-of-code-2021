@@ -39,7 +39,7 @@ Some learned lesson for each day:
 22. TODO
 23. TODO
 24. TODO
-25. TODO
+25. There's (an) order to things in life.
 
 ## Compendium Repositories
 
