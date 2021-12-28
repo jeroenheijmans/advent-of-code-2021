@@ -270,25 +270,276 @@ foreach (explode(PHP_EOL, trim($input)) as $line) {
 $data = array_map(intval(...), explode(PHP_EOL, trim($input)));
 
 // Trying to 'compile' instructions into
-function subProgramFirstDigit($w, $x, $y, $z) {
+function runDecompiledProgram($inputs) {
+  $w = 0; $x = 0; $y = 0; $z = 0;
 
-  if ((($z % 26) + 13) === $w) 
-    return 0; // z
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 13; // add x 13
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 6; // add y 6
+  $y *= $x; // mul y x
+  $z += $y; // add z y
 
-  return
-    ($z * 26 * $x)
-    +
-    (($w + 6) * $x);
-}
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 15; // add x 15
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 7; // add y 7
+  $y *= $x; // mul y x
+  $z += $y; // add z y
 
-function subProgramLastDigit($w, $z) {
-  // inp w
-  $x = $z % 26;
-  $z = floor($z / 26);
-  
-  $x = $x===$w ? 0 : 1;
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 15; // add x 15
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 10
+  $y *= $x; // mul y x
+  $z += $y; // add z y
 
-  $z = ($z * 26 * $x) + (($w + 10) * $x);
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 11; ////// add x 11
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  // add y 2
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += -7; ////// add x -7
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 15
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 10; //// add x 10
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 8; //// add y 8
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 10; //// add x 10
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 1
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += -5; ////// add x -5
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 10
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 1); // div z 1
+  $x += 15; // add x 15
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 5; //// add y 5
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += -3; ////// add x -3
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 3; ////// add y 3
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += 0; ////// add x 0
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y += 5; //// add y 5
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += -5; ////// add x -5
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 11
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += -9; //// add x -9
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 12
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  $w = next($inputs); // inp w
+  $x = 0; // mul x 0
+  $x += $z; // add x z
+  $x %= 26; // mod x 26
+  $z = intdiv($z, 26); //// div z 26
+  $x += 0; ////// add x 0
+  $x = $x === $w ? 1 : 0; // eql x w
+  $x = $x === 0 ? 1 : 0; // eql x 0
+  $y = 0; // mul y 0
+  $y += 25; // add y 25
+  $y *= $x; // mul y x
+  $y++; // add y 1
+  $z *= $y; // mul z y
+  $y = 0; // mul y 0
+  $y += $w; // add y w
+  $y++; // add y 10
+  $y *= $x; // mul y x
+  $z += $y; // add z y
+
+  return $z;
 }
 
 function runProgram($program, $inputs) {
@@ -362,20 +613,25 @@ function runProgram($program, $inputs) {
 
 function solvePart1($program): int {
 
-  $inputs = 12345678999999;
+  $inputs = 99999999999999;
   $loop = 0;
-  do {
-    while (str_contains("$inputs", "0")) $inputs--;
-    if ($loop % 100000 === 0) echo "Time: " . date("H:i:s", time()) . " Loop $loop checking $inputs\n";
-    $input = array_map(intval(...), str_split("$inputs"));
-    $result = runProgram($program, $input);
-    if ($result === 0) break;
+  $start = hrtime(true);
 
-    if ($loop++ > 1000000000) { echo "Early exit for safety!\n"; break; }
-    break;
-  } while (--$inputs > 0);
+  while (true) {
+    $inputs--;
+    $txt = "$inputs";
+    if (str_contains($txt,"0")) continue;
+    if (++$loop % 1000000 === 0) {
+      echo "Loop $loop time " . ((hrtime(true) - $start) / 1000000000) . " seconds next up MONAD $txt.\n";
+    }
+    $result = runDecompiledProgram(str_split($txt));
+    if ($result === 0) {
+      echo "Found result $inputs!\n";
+      return $inputs;
+    }
+  }
 
-  return $inputs;
+  return -1;
 }
 
 function solvePart2($program): int {
