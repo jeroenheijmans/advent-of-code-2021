@@ -273,14 +273,15 @@ $data = array_map(intval(...), explode(PHP_EOL, trim($input)));
 function runDecompiledProgram($inputs) {
   $w = 0; $x = 0; $y = 0; $z = 0;
 
-  $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  $w = current($inputs); // inp w
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 13; // add x 13
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -293,13 +294,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 15; // add x 15
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -312,13 +314,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 15; // add x 15
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -331,13 +334,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 11; ////// add x 11
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -350,13 +354,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += -7; ////// add x -7
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -369,13 +374,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 10; //// add x 10
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -388,13 +394,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 10; //// add x 10
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -407,13 +414,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += -5; ////// add x -5
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -426,13 +434,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
-  $z = intdiv($z, 1); // div z 1
+  // $z = intdiv($z, 1); // div z 1
   $x += 15; // add x 15
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -445,13 +454,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += -3; ////// add x -3
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -464,13 +474,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += 0; ////// add x 0
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -483,13 +494,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += -5; ////// add x -5
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -502,13 +514,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += -9; //// add x -9
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
@@ -521,13 +534,14 @@ function runDecompiledProgram($inputs) {
   $z += $y; // add z y
 
   $w = next($inputs); // inp w
-  $x = 0; // mul x 0
-  $x += $z; // add x z
+  // echo "$w\n";
+  // mul x 0
+  $x = $z; // add x z
   $x %= 26; // mod x 26
   $z = intdiv($z, 26); //// div z 26
   $x += 0; ////// add x 0
-  $x = $x === $w ? 1 : 0; // eql x w
-  $x = $x === 0 ? 1 : 0; // eql x 0
+  $x = $x === $w ? 0 : 1; // eql x w
+  // $x = $x === 0 ? 1 : 0; // eql x 0
   $y = 0; // mul y 0
   $y += 25; // add y 25
   $y *= $x; // mul y x
