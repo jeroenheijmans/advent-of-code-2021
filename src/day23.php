@@ -27,16 +27,78 @@ class Location {
     $this->linkedLocations = new Collection();
   }
 
+  function __debugInfo() {
+    return [
+      "key" => $this->key,
+      "linkedLocations" => "[" . implode(" | ", $this->linkedLocations->map(fn($x) => $x->key)->toArray()) . "]",
+    ];
+  }
+
   function linkTo($otherLocation) {
     $this->linkedLocations->push($otherLocation);
     $otherLocation->linkedLocations->push($this);
+  }
+
+  function isHallwayStop() {
+    return $this->key === "0,0"
+      || $this->key === "1,0"
+      || $this->key === "3,0"
+      || $this->key === "5,0"
+      || $this->key === "7,0"
+      || $this->key === "9,0"
+      || $this->key === "10,0";
+  }
+
+  function isEndLocationFor($state, $unit) {
+    switch ($unit) {
+      case "A":
+        return $this->key === "2,2" || ($this->key === "2,1" && $state["2,2"] === "A");
+      case "B":
+        return $this->key === "4,2" || ($this->key === "4,1" && $state["4,2"] === "B");
+      case "C":
+        return $this->key === "6,2" || ($this->key === "6,1" && $state["6,2"] === "C");
+      case "D":
+        return $this->key === "8,2" || ($this->key === "8,1" && $state["8,2"] === "D");
+      default:
+        throw new Error("Unknown unit $unit");
+    }
+  }
+
+  function findTargetsFor(
+    $state,
+    $coords,
+    $visited = [],
+    $steps = 0,
+  ) {
+    $visited = array_merge($visited, [$this->key]);
+
+    $baseTargets = new Collection();
+
+    if ($this->key !== $coords) {
+      if ($this->isHallwayStop()
+        || $this->isEndLocationFor($state, $state[$coords])) {
+        $baseTargets->push(["target" => $this->key, "steps" => $steps]);
+      }
+    }
+
+    // Walk on to further locations:
+    $deeperTargets = $this->linkedLocations
+      ->filter(fn($other) => !in_array($other->key, $visited)) // unvisited
+      ->filter(fn($other) => !array_key_exists($other->key, $state)) // not taken by someone
+      ->map(fn($other) => $other->findTargetsFor($state, $coords, $visited, $steps + 1))
+      ->flatten(1)
+    ;
+
+    return $baseTargets->concat($deeperTargets);
   }
 }
 
 class Level {
   function __construct(
-    public $locations = new Collection(),
-  ) { }
+    public $locations,
+  ) {
+    $this->linkUpLocations();
+  }
 
   function linkUpLocations() {
     $this->locations->get("0,0")->linkTo($this->locations->get("1,0"));
@@ -143,16 +205,12 @@ function solvePart1($level, $board) {
 
       // Look for allowed, reachable positions:
       else {
-        $potentialTargets = [];
-        while (true) {
-          // Ugh... now what?
-          break;
-        }
+        $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
       }
 
-      $targets = $level->legalTargetsFOr($coords, $unit, $state);
       echo "Targets for $coords / $unit are:\n";
       print_r($targets);
+      return -2;
     }
   }
 
