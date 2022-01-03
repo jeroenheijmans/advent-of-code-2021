@@ -13,79 +13,92 @@ $input = "
   #########
 ";
 
-
 $data = array_map(fn($x) => str_split($x), explode(PHP_EOL, trim($input)));
 
-$level = [0 => [], 1 => [], 2 => []];
+class Location {
+  function __construct(
+    public $x,
+    public $y,
+    public $key = "$x,$y",
+  ) {
+  }
 
-for ($x = 0; $x < 11; $x++) {
-  $level[0][$x] = ".";
-}
+  public $linkedLocations = new Collection();
 
-$level[1][2] = $data[2][3];
-$level[2][2] = $data[2][3];
-
-$level[1][4] = $data[2][5];
-$level[2][4] = $data[2][5];
-
-$level[1][6] = $data[2][7];
-$level[2][6] = $data[2][7];
-
-$level[1][8] = $data[2][9];
-$level[2][8] = $data[2][9];
-
-function show($level) {
-  for ($y = 0; $y < 3; $y++) {
-    for ($x = 0; $x < 11; $x++) {
-      echo $level[$y][$x] ?? " ";
-    }
-    echo "\n";
+  function linkTo($otherLocation) {
+    $this->linkedLocations->push($otherLocation);
+    $otherLocation->linkedLocations->push($this);
   }
 }
 
-show($level);
+class Level {
+  function __construct(
+    public $locations = new Collection(),
+  ) { }
+
+  function linkUpLocations() {
+    $this->locations->get("0,0")->linkTo($this->locations->get("1,0"));
+    $this->locations->get("1,0")->linkTo($this->locations->get("2,0"));
+    $this->locations->get("2,0")->linkTo($this->locations->get("3,0"));
+    $this->locations->get("3,0")->linkTo($this->locations->get("4,0"));
+    $this->locations->get("4,0")->linkTo($this->locations->get("5,0"));
+    $this->locations->get("5,0")->linkTo($this->locations->get("6,0"));
+    $this->locations->get("6,0")->linkTo($this->locations->get("7,0"));
+    $this->locations->get("7,0")->linkTo($this->locations->get("8,0"));
+    $this->locations->get("8,0")->linkTo($this->locations->get("9,0"));
+    $this->locations->get("9,0")->linkTo($this->locations->get("10,0"));
+    
+    $this->locations->get("2,0")->linkTo($this->locations->get("2,1"));
+    $this->locations->get("2,1")->linkTo($this->locations->get("2,2"));
+    
+    $this->locations->get("4,0")->linkTo($this->locations->get("4,1"));
+    $this->locations->get("4,1")->linkTo($this->locations->get("4,2"));
+    
+    $this->locations->get("6,0")->linkTo($this->locations->get("6,1"));
+    $this->locations->get("6,1")->linkTo($this->locations->get("6,2"));
+    
+    $this->locations->get("8,0")->linkTo($this->locations->get("8,1"));
+    $this->locations->get("8,1")->linkTo($this->locations->get("8,2"));
+  }
+}
+
+$level = new Level(
+  $locations = new Collection([
+    "0,0" => new Location(0,0),
+    "1,0" => new Location(1,0),
+    "2,0" => new Location(2,0),
+    "3,0" => new Location(3,0),
+    "4,0" => new Location(4,0),
+    "5,0" => new Location(5,0),
+    "6,0" => new Location(6,0),
+    "7,0" => new Location(7,0),
+    "8,0" => new Location(8,0),
+    "9,0" => new Location(9,0),
+    "10,0" => new Location(10,0),
+    "2,1" => new Location(2,1),
+    "2,2" => new Location(2,2),
+    "4,1" => new Location(4,1),
+    "4,2" => new Location(4,2),
+    "6,1" => new Location(6,1),
+    "6,2" => new Location(6,2),
+    "8,1" => new Location(8,1),
+    "8,2" => new Location(8,2),
+  ])
+);
+
+$board = [
+  "2,3" => $data[2][3],
+  "3,3" => $data[3][3],
+  "2,5" => $data[2][5],
+  "3,5" => $data[3][5],
+  "2,7" => $data[2][7],
+  "3,7" => $data[3][7],
+  "2,9" => $data[2][9],
+  "3,9" => $data[3][9],
+];
+
 
 function solvePart1($level) {
-
-  $edgeLevelsByTotalCost = new Collection([
-    0 => $level
-  ]);
-
-  $loop = 0;
-
-  $sourceLevel = $level;
-
-  while (true) {
-    if (++$loop > 99) throw new Error("Took too long, have a bug?");
-
-    $nextLevelsToConsiderWithTheirCost = new Collection();
-
-    foreach ($sourceLevel as $y => $row) {
-      foreach ($row as $x => $cell) {
-        // Already at our destination:
-        if ($cell === "A" && $y === 2 && $x === 2) continue;
-        if ($cell === "A" && $y === 1 && $x === 2 && $level[2][2] === "A") continue;
-        if ($cell === "B" && $y === 2 && $x === 4) continue;
-        if ($cell === "B" && $y === 1 && $x === 4 && $level[2][4] === "B") continue;
-        if ($cell === "C" && $y === 2 && $x === 6) continue;
-        if ($cell === "C" && $y === 1 && $x === 6 && $level[2][6] === "C") continue;
-        if ($cell === "D" && $y === 2 && $x === 8) continue;
-        if ($cell === "D" && $y === 1 && $x === 8 && $level[2][8] === "D") continue;
-
-        if (ctype_alpha($cell)) {
-          if ($y === 2 && ctype_alpha($level[1][$x])) continue; // Someone's blocking us
-          // etc.
-
-          // Let's stop here. Seems this approach with straight up array for a level
-          // will be easier to start with, but a lot harder to write navigation
-          // logic for. So an all out OO approach seems better for part 1 after all.
-          // Let's commit the current state before we throw it out... :P
-        }
-      }
-    }
-
-  }
-
   return -1;
 }
 
