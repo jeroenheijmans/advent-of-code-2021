@@ -70,16 +70,22 @@ class Location {
     $visited = [],
     $steps = 0,
   ) {
-    $visited = array_merge($visited, [$this->key]);
+    $iAmTheEndGoal = $this->isEndLocationFor($state, $state[$coords]);
+
+    // There are no targets for a unit that is at it's target
+    if ($iAmTheEndGoal && $coords === $this->key) return new Collection();
 
     $baseTargets = new Collection();
 
+    // Only add myself as a target if I'm not the start...
     if ($this->key !== $coords) {
-      if ($this->isHallwayStop()
-        || $this->isEndLocationFor($state, $state[$coords])) {
+      // ... AND I'm a nice goal
+      if ($this->isHallwayStop() || $iAmTheEndGoal) {
         $baseTargets->push(["target" => $this->key, "steps" => $steps]);
       }
     }
+
+    $visited = array_merge($visited, [$this->key]);
 
     // Walk on to further locations:
     $deeperTargets = $this->linkedLocations
@@ -162,6 +168,7 @@ $board = [
 ];
 
 function solvePart1($level, $board) {
+  $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
 
   $links = new Collection([
     "0,0"  => new Collection([       "1,0"]),
@@ -193,23 +200,19 @@ function solvePart1($level, $board) {
   foreach ($statesWithCost as [$cost, $state]) {
     foreach ($state as $coords => $unit) {
       
-      // All variants where you are at your destination already:
-      if ($unit === "A" && $coords === "2,2") $targets = [];
-      else if ($unit === "A" && $coords === "2,1" && $state["2,2"] === "A") $targets = [];
-      else if ($unit === "B" && $coords === "4,2") $targets = [];
-      else if ($unit === "B" && $coords === "4,1" && $state["2,2"] === "B") $targets = [];
-      else if ($unit === "C" && $coords === "6,2") $targets = [];
-      else if ($unit === "C" && $coords === "6,1" && $state["2,2"] === "C") $targets = [];
-      else if ($unit === "D" && $coords === "8,2") $targets = [];
-      else if ($unit === "D" && $coords === "8,1" && $state["2,2"] === "D") $targets = [];
+      $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
 
-      // Look for allowed, reachable positions:
-      else {
-        $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
+      // echo "Targets for $coords / $unit are:\n";
+      foreach ($targets as ["target" => $target, "steps" => $steps]) {
+        // echo "$target in $steps\n";
+        $newstate = $state;
+        unset($newstate[$coords]);
+        $newstate[$target] = $unit;
+        $newcost = $cost + ($steps * $costPerStep[$unit]);
+        $x = array_map(fn($k) => "$k ($newstate[$k])", array_keys($newstate));
+        echo "$unit at $coords moving to $target costs $newcost leading to newstate: [" . implode(" | ", $x) . "]\n";
       }
 
-      echo "Targets for $coords / $unit are:\n";
-      print_r($targets);
       return -2;
     }
   }
