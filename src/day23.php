@@ -8,8 +8,8 @@ function collect($value = null) { return new Collection($value); }
 $input = "
 #############
 #...........#
-###B#C#B#D###
-  #A#D#C#A#
+###A#C#B#A###
+  #D#D#B#C#
   #########
 ";
 
@@ -235,18 +235,22 @@ function printLevels($statesWithCost) {
 
 function solvePart1($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
-  $statesWithCost = [[0, $board]];
+  $statesWithCost = [0 => [$board]];
   $loop = 0;
   $lowestKnownCostToEndState = PHP_INT_MAX;
+  $visited = [];
 
   while (true) {
     if ($loop++ > 1_00_000) throw new Error("Max loop reached");
 
-    $lowestCost = min(array_map(fn($entry) => $entry[0], $statesWithCost));
-    $newStatesWithCost = array_filter($statesWithCost, fn($entry) => $entry[0] > $lowestCost);
-    $statesToConsiderNext = array_filter($statesWithCost, fn($entry) => $entry[0] === $lowestCost);
+    $lowestCost = min(array_keys($statesWithCost));
 
-    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
+    $newStatesWithCost = $statesWithCost; // clone array
+    unset($newStatesWithCost[$lowestCost]); // remove entries we will consider next
+
+    $statesToConsiderNext = $statesWithCost[$lowestCost];
+
+    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states (lowest known cost so far: $lowestKnownCostToEndState)\n";
 
     if ($lowestCost >= $lowestKnownCostToEndState) {
       echo "About to start checking states that are already equal to the best possible solution, so we're done!\n";
@@ -256,9 +260,11 @@ function solvePart1($level, $board) {
     //printLevels($statesToConsiderNext);
     //if ($loop === 150) return -3;
 
-    foreach ($statesToConsiderNext as [$cost, $state]) {
+    foreach ($statesToConsiderNext as $state) {
+      if (in_array($state, $visited)) continue;
+      else array_push($visited, $state);
+
       foreach ($state as $coords => $unit) {
-        
         $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
         // echo "Loop $loop checking $unit at $coords giving " . count($targets) . " extra targets\n";
 
@@ -271,22 +277,16 @@ function solvePart1($level, $board) {
           $newstate = $state;
           unset($newstate[$coords]);
           $newstate[$target] = $unit;
-          $newcost = $cost + ($steps * $costPerStep[$unit]);
+          $newcost = $lowestCost + ($steps * $costPerStep[$unit]);
           ksort($newstate);
 
-          $stateAlreadyKnown = false;
-          foreach ($newStatesWithCost as $key => $value) {
-            if ($value[1] === $newstate && $value[0] > $newcost) {
-              $newstate[$key][0] = $newcost;
-              $stateAlreadyKnown = true;
-              break; // We should have each state in the array only once!!
-            }
+          
+          if (isEndState($newstate)) {
+            $lowestKnownCostToEndState = min($lowestKnownCostToEndState, $newcost);
+          } else {
+            if (!array_key_exists($newcost, $newStatesWithCost)) $newStatesWithCost[$newcost] = [$newstate];
+            else array_push($newStatesWithCost[$newcost], $newstate);
           }
-
-          if (!$stateAlreadyKnown) array_push($newStatesWithCost, [$newcost, $newstate]);
-
-          // If there is a winning move, there will be only exactly one so we can immediately return:
-          if (isEndState($newstate)) $lowestKnownCostToEndState = min($lowestKnownCostToEndState, $newcost);
         }
       }
     }
