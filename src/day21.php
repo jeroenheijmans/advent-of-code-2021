@@ -37,11 +37,26 @@ function solvePart1() {
   return min($score1, $score2) * $rolls;
 }
 
-function solvePart2() {
-  $p1 = 4; // Sample
-  $p2 = 8; // Sample
+function playRecursive($players, $activePlayer = 0, $rollsLeft = 3) {
+  if ($rollsLeft === 0) {
+    $newscore = $players[$activePlayer][1] + $players[$activePlayer][0];
+    if ($newscore >= 21) {
+      return $activePlayer === 0 ? [1, 0] : [0, 1];
+    }
+    $players[$activePlayer][1] = $newscore;
+    return playRecursive($players, $activePlayer === 0 ? 1 : 0);
+  } else {
+    // roll 1
+    // roll 2
+    // roll 3
+    // concatenate results from all rolls
+  }
+}
 
-  return -1;
+function solvePart2() {
+  $p1 = 4;
+  $p2 = 8;
+  return playRecursive([[$p1, 0], [$p2, 0]]);
 }
 
 echo "Solution 1: " . solvePart1() . "\n";
