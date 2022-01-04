@@ -49,16 +49,27 @@ class Location {
       || $this->key === "10,0";
   }
 
+  function isInRoom() {
+    return $this->key === "2,1"
+      || $this->key === "2,2"
+      || $this->key === "4,1"
+      || $this->key === "4,2"
+      || $this->key === "6,1"
+      || $this->key === "6,2"
+      || $this->key === "8,1"
+      || $this->key === "8,2";
+  }
+
   function isEndLocationFor($state, $unit) {
     switch ($unit) {
       case "A":
-        return $this->key === "2,2" || ($this->key === "2,1" && $state["2,2"] === "A");
+        return $this->key === "2,2" || ($this->key === "2,1" && array_key_exists("2,2", $state) && $state["2,2"] === "A");
       case "B":
-        return $this->key === "4,2" || ($this->key === "4,1" && $state["4,2"] === "B");
+        return $this->key === "4,2" || ($this->key === "4,1" && array_key_exists("4,2", $state) && $state["4,2"] === "B");
       case "C":
-        return $this->key === "6,2" || ($this->key === "6,1" && $state["6,2"] === "C");
+        return $this->key === "6,2" || ($this->key === "6,1" && array_key_exists("6,2", $state) && $state["6,2"] === "C");
       case "D":
-        return $this->key === "8,2" || ($this->key === "8,1" && $state["8,2"] === "D");
+        return $this->key === "8,2" || ($this->key === "8,1" && array_key_exists("8,2", $state) && $state["8,2"] === "D");
       default:
         throw new Error("Unknown unit $unit");
     }
@@ -79,8 +90,12 @@ class Location {
 
     // Only add myself as a target if I'm not the start...
     if ($this->key !== $coords) {
-      // ... AND I'm a nice goal
-      if ($this->isHallwayStop() || $iAmTheEndGoal) {
+      // ... AND EITHER I'm a goal
+      if ($iAmTheEndGoal) {
+        $baseTargets->push(["target" => $this->key, "steps" => $steps]);
+      }
+      // ... OR I'm not a hallway-to-hallway move
+      else if ($this->isHallwayStop() && !str_ends_with($coords, ",0")) {
         $baseTargets->push(["target" => $this->key, "steps" => $steps]);
       }
     }
@@ -223,7 +238,12 @@ function solvePart1($level, $board) {
     $newStatesWithCost = array_filter($statesWithCost, fn($entry) => $entry[0] > $lowestCost);
     $statesToConsiderNext = array_filter($statesWithCost, fn($entry) => $entry[0] === $lowestCost);
 
-    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states\n";
+    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
+
+    // if ($loop === 107) {
+    //   print_r($statesToConsiderNext);
+    //   return -3;
+    // }
 
     foreach ($statesToConsiderNext as [$cost, $state]) {
       foreach ($state as $coords => $unit) {
