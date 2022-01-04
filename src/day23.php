@@ -216,12 +216,22 @@ function printLevel($state) {
   }
 }
 
+try {
+  $colsOnTerminal = intval(trim(shell_exec('powershell $Host.UI.RawUI.WindowSize.Width')));
+} catch (Exception $_) {
+  echo "Warning! No powershell, no auto-width determining...\n";
+  $colsOnTerminal = 120;
+}
+
 function printLevels($statesWithCost) {
-  $all = (new Collection($statesWithCost))->chunk(8);
+  global $colsOnTerminal;
+  $chunksize = intdiv($colsOnTerminal, 16);
+
+  $all = (new Collection($statesWithCost))->chunk($chunksize);
   echo "\n";
   foreach ($all as $chunk) {
     for($y = 0; $y < 3; $y++) {
-      for($tx = 0; $tx < 8 * 16; $tx++) {
+      for($tx = 0; $tx < $chunksize * 16; $tx++) {
         $i = intdiv($tx, 16);
         $currentState = $chunk->skip($i)->first();
         if (!$currentState) break;
@@ -237,35 +247,11 @@ function printLevels($statesWithCost) {
 
 function solvePart1($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
-
-  $links = new Collection([
-    "0,0"  => new Collection([       "1,0"]),
-    "1,0"  => new Collection(["0,0", "2,0"]),
-    "2,0"  => new Collection(["1,0", "3,0", "2,1"]),
-    "3,0"  => new Collection(["2,0", "4,0"]),
-    "4,0"  => new Collection(["3,0", "5,0", "4,1"]),
-    "5,0"  => new Collection(["4,0", "6,0"]),
-    "6,0"  => new Collection(["5,0", "7,0", "6,1"]),
-    "7,0"  => new Collection(["6,0", "8,0"]),
-    "8,0"  => new Collection(["7,0", "9,0", "8,1"]),
-    "9,0"  => new Collection(["8,0", "10,0"]),
-    "10,0" => new Collection(["9,0", ]),
-
-    "2,1"  => new Collection(["2,0", "2,2"]),
-    "2,2"  => new Collection(["2,1"]),
-    "4,1"  => new Collection(["4,0", "4,2"]),
-    "4,2"  => new Collection(["4,1"]),
-    "6,1"  => new Collection(["6,0", "6,2"]),
-    "6,2"  => new Collection(["6,1"]),
-    "8,1"  => new Collection(["8,0", "8,2"]),
-    "8,2"  => new Collection(["8,1"]),
-  ]);
-
   $statesWithCost = [[0, $board]];
   $loop = 0;
 
   while (true) {
-    if ($loop++ > 1000) throw new Error("Max loop reached");
+    if ($loop++ > 10000) throw new Error("Max loop reached");
 
     $lowestCost = min(array_map(fn($entry) => $entry[0], $statesWithCost));
     $newStatesWithCost = array_filter($statesWithCost, fn($entry) => $entry[0] > $lowestCost);
@@ -273,31 +259,22 @@ function solvePart1($level, $board) {
 
     echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
 
-    printLevels($statesToConsiderNext);
-    // echo "--------\nOther states:\n";
-    // foreach ($newStatesWithCost as $nxt) {
-    //   echo "Cost $nxt[0]\n";
-    //   printLevel($nxt[1]);
-    //   echo "\n";
-    // }
-    if ($loop === 5) {
-      return -3;
-    }
+    //printLevels($statesToConsiderNext);
+    //if ($loop === 150) {
+    //  return -3;
+    //}
 
     foreach ($statesToConsiderNext as [$cost, $state]) {
       foreach ($state as $coords => $unit) {
         
         $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
+        // echo "Loop $loop checking $unit at $coords giving " . count($targets) . " extra targets\n";
   
-        // echo "Targets for $coords / $unit are:\n";
         foreach ($targets as ["target" => $target, "steps" => $steps]) {
-          // echo "$target in $steps\n";
           $newstate = $state;
           unset($newstate[$coords]);
           $newstate[$target] = $unit;
           $newcost = $cost + ($steps * $costPerStep[$unit]);
-          // $x = array_map(fn($k) => "$k ($newstate[$k])", array_keys($newstate));
-          // echo "$unit at $coords moving to $target costs $newcost leading to newstate: [" . implode(" | ", $x) . "]\n";
           ksort($newstate);
 
           $stateAlreadyKnown = false;
@@ -308,6 +285,8 @@ function solvePart1($level, $board) {
               break; // We should have each state in the array only once!!
             }
           }
+
+          // Idea for speedup: if some "targets" will put the unit in a end spot, don't consider any other targets at all...
 
           if (!$stateAlreadyKnown) array_push($newStatesWithCost, [$newcost, $newstate]);
 
