@@ -25,6 +25,14 @@ class Location {
   ) {
     $this->key = "$x,$y";
     $this->linkedLocations = new Collection();
+
+    $this->isHallwayStop = $this->key === "0,0"
+      || $this->key === "1,0"
+      || $this->key === "3,0"
+      || $this->key === "5,0"
+      || $this->key === "7,0"
+      || $this->key === "9,0"
+      || $this->key === "10,0";
   }
 
   function __debugInfo() {
@@ -39,28 +47,7 @@ class Location {
     $otherLocation->linkedLocations->push($this);
   }
 
-  function isHallwayStop() {
-    return $this->key === "0,0"
-      || $this->key === "1,0"
-      || $this->key === "3,0"
-      || $this->key === "5,0"
-      || $this->key === "7,0"
-      || $this->key === "9,0"
-      || $this->key === "10,0";
-  }
-
-  function isInRoom() {
-    return $this->key === "2,1"
-      || $this->key === "2,2"
-      || $this->key === "4,1"
-      || $this->key === "4,2"
-      || $this->key === "6,1"
-      || $this->key === "6,2"
-      || $this->key === "8,1"
-      || $this->key === "8,2";
-  }
-
-  function isEndLocationFor($state, $unit) {
+  function isEndLocationFor(&$state, $unit) {
     switch ($unit) {
       case "A":
         return $this->key === "2,2" || ($this->key === "2,1" && array_key_exists("2,2", $state) && $state["2,2"] === "A");
@@ -76,8 +63,8 @@ class Location {
   }
 
   function findTargetsFor(
-    $state,
-    $coords,
+    &$state,
+    &$coords,
     $visited = [],
     $steps = 0,
   ) {
@@ -95,7 +82,7 @@ class Location {
         $baseTargets->push(["target" => $this->key, "steps" => $steps, "isgoal" => true]);
       }
       // ... OR I'm not a hallway-to-hallway move
-      else if ($this->isHallwayStop() && !str_ends_with($coords, ",0")) {
+      else if ($this->isHallwayStop && !str_ends_with($coords, ",0")) {
         $baseTargets->push(["target" => $this->key, "steps" => $steps, "isgoal" => false]);
       }
     }
@@ -182,22 +169,23 @@ $board = [
   "8,2" => $data[3][9],
 ];
 
-// TODO: Is pass by reference more sane here?
-function sameState($a, $b) {
+function sameState(&$a, &$b) {
   return empty(array_diff_assoc($a, $b));
 }
 
-function isEndState($state) {
-  $endstate = [
-    "2,1" => "A",
-    "2,2" => "A",
-    "4,1" => "B",
-    "4,2" => "B",
-    "6,1" => "C",
-    "6,2" => "C",
-    "8,1" => "D",
-    "8,2" => "D",
-  ];
+$endstate = [
+  "2,1" => "A",
+  "2,2" => "A",
+  "4,1" => "B",
+  "4,2" => "B",
+  "6,1" => "C",
+  "6,2" => "C",
+  "8,1" => "D",
+  "8,2" => "D",
+];
+
+function isEndState(&$state) {
+  global $endstate;
 
   return sameState($state, $endstate);
 }
@@ -249,6 +237,7 @@ function solvePart1($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
   $statesWithCost = [[0, $board]];
   $loop = 0;
+  $lowestKnownCostToEndState = PHP_INT_MAX;
 
   while (true) {
     if ($loop++ > 1_00_000) throw new Error("Max loop reached");
@@ -259,10 +248,13 @@ function solvePart1($level, $board) {
 
     echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
 
+    if ($lowestCost >= $lowestKnownCostToEndState) {
+      echo "About to start checking states that are already equal to the best possible solution, so we're done!\n";
+      return $lowestKnownCostToEndState;
+    }
+
     //printLevels($statesToConsiderNext);
-    //if ($loop === 150) {
-    //  return -3;
-    //}
+    //if ($loop === 150) return -3;
 
     foreach ($statesToConsiderNext as [$cost, $state]) {
       foreach ($state as $coords => $unit) {
@@ -294,7 +286,7 @@ function solvePart1($level, $board) {
           if (!$stateAlreadyKnown) array_push($newStatesWithCost, [$newcost, $newstate]);
 
           // If there is a winning move, there will be only exactly one so we can immediately return:
-          if (isEndState($newstate)) return $newcost;
+          if (isEndState($newstate)) $lowestKnownCostToEndState = min($lowestKnownCostToEndState, $newcost);
         }
       }
     }
