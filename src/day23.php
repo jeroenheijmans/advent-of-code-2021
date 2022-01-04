@@ -202,19 +202,35 @@ function isEndState($state) {
   return sameState($state, $endstate);
 }
 
+function isOnBoard($x, $y) {
+  return ($y === 0 && ($x >=0 && $x <= 10))
+    || (($y === 1 || $y === 2) && ($x === 2 || $x === 4 || $x === 6 || $x === 8));
+}
+
 function printLevel($state) {
-  for($y=-1; $y<4; $y++) {
+  for($y=0; $y<3; $y++) {
     for($x=-1; $x<12; $x++) {
-      $key = "$x,$y";
-      if (
-        ($y === 0 && ($x >=0 && $x <= 10))
-        || (($y === 1 || $y === 2) && ($x === 2 || $x === 4 || $x === 6 || $x === 8))
-      ) {
-        echo $state[$key] ?? ".";
-      } else {
-        echo " ";
-      }
+      echo isOnBoard($x, $y) ? ($state["$x,$y"] ?? ".") : " ";
     }
+    echo "\n";
+  }
+}
+
+function printLevels($statesWithCost) {
+  $all = (new Collection($statesWithCost))->chunk(8);
+  echo "\n";
+  foreach ($all as $chunk) {
+    for($y = 0; $y < 3; $y++) {
+      for($tx = 0; $tx < 8 * 16; $tx++) {
+        $i = intdiv($tx, 16);
+        $currentState = $chunk->skip($i)->first();
+        if (!$currentState) break;
+        $x = $tx % 16;
+        echo isOnBoard($x, $y) ? ($currentState[1]["$x,$y"] ?? ".") : " ";
+      }
+      echo "\n";
+    }
+    echo "\n";
     echo "\n";
   }
 }
@@ -257,10 +273,14 @@ function solvePart1($level, $board) {
 
     echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
 
-    foreach ($statesToConsiderNext as $nxt) {
-      printLevel($nxt[1]);
-    }
-    if ($loop === 4) {
+    printLevels($statesToConsiderNext);
+    // echo "--------\nOther states:\n";
+    // foreach ($newStatesWithCost as $nxt) {
+    //   echo "Cost $nxt[0]\n";
+    //   printLevel($nxt[1]);
+    //   echo "\n";
+    // }
+    if ($loop === 5) {
       return -3;
     }
 
