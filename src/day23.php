@@ -202,6 +202,23 @@ function isEndState($state) {
   return sameState($state, $endstate);
 }
 
+function printLevel($state) {
+  for($y=-1; $y<4; $y++) {
+    for($x=-1; $x<12; $x++) {
+      $key = "$x,$y";
+      if (
+        ($y === 0 && ($x >=0 && $x <= 10))
+        || (($y === 1 || $y === 2) && ($x === 2 || $x === 4 || $x === 6 || $x === 8))
+      ) {
+        echo $state[$key] ?? ".";
+      } else {
+        echo " ";
+      }
+    }
+    echo "\n";
+  }
+}
+
 function solvePart1($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
 
@@ -240,10 +257,12 @@ function solvePart1($level, $board) {
 
     echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states\n";
 
-    // if ($loop === 107) {
-    //   print_r($statesToConsiderNext);
-    //   return -3;
-    // }
+    foreach ($statesToConsiderNext as $nxt) {
+      printLevel($nxt[1]);
+    }
+    if ($loop === 4) {
+      return -3;
+    }
 
     foreach ($statesToConsiderNext as [$cost, $state]) {
       foreach ($state as $coords => $unit) {
