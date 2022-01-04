@@ -9,6 +9,8 @@ $input = "
 #############
 #...........#
 ###A#C#B#A###
+  #D#C#B#A#
+  #D#B#A#C#
   #D#D#B#C#
   #########
 ";
@@ -50,13 +52,41 @@ class Location {
   function isEndLocationFor(&$state, $unit) {
     switch ($unit) {
       case "A":
-        return $this->key === "2,2" || ($this->key === "2,1" && array_key_exists("2,2", $state) && $state["2,2"] === "A");
+        $y2 = $state["2,2"] ?? null;
+        $y3 = $state["2,3"] ?? null;
+        $y4 = $state["2,4"] ?? null;
+        return $this->key === "2,4"
+          || $this->key === "2,3" && $y4 === "A"
+          || $this->key === "2,2" && $y4 === "A" && $y3 === "A"
+          || $this->key === "2,1" && $y4 === "A" && $y3 === "A" && $y2 === "A"
+          ;
       case "B":
-        return $this->key === "4,2" || ($this->key === "4,1" && array_key_exists("4,2", $state) && $state["4,2"] === "B");
+        $y2 = $state["4,2"] ?? null;
+        $y3 = $state["4,3"] ?? null;
+        $y4 = $state["4,4"] ?? null;
+        return $this->key === "4,4"
+          || $this->key === "4,3" && $y4 === "B"
+          || $this->key === "4,2" && $y4 === "B" && $y3 === "B"
+          || $this->key === "4,1" && $y4 === "B" && $y3 === "B" && $y2 === "B"
+          ;
       case "C":
-        return $this->key === "6,2" || ($this->key === "6,1" && array_key_exists("6,2", $state) && $state["6,2"] === "C");
+        $y2 = $state["6,2"] ?? null;
+        $y3 = $state["6,3"] ?? null;
+        $y4 = $state["6,4"] ?? null;
+        return $this->key === "6,4"
+          || $this->key === "6,3" && $y4 === "C"
+          || $this->key === "6,2" && $y4 === "C" && $y3 === "C"
+          || $this->key === "6,1" && $y4 === "C" && $y3 === "C" && $y2 === "C"
+          ;
       case "D":
-        return $this->key === "8,2" || ($this->key === "8,1" && array_key_exists("8,2", $state) && $state["8,2"] === "D");
+        $y2 = $state["8,2"] ?? null;
+        $y3 = $state["8,3"] ?? null;
+        $y4 = $state["8,4"] ?? null;
+        return $this->key === "8,4"
+          || $this->key === "8,3" && $y4 === "D"
+          || $this->key === "8,2" && $y4 === "D" && $y3 === "D"
+          || $this->key === "8,1" && $y4 === "D" && $y3 === "D" && $y2 === "D"
+          ;
       default:
         throw new Error("Unknown unit $unit");
     }
@@ -122,15 +152,23 @@ class Level {
     
     $this->locations->get("2,0")->linkTo($this->locations->get("2,1"));
     $this->locations->get("2,1")->linkTo($this->locations->get("2,2"));
+    $this->locations->get("2,2")->linkTo($this->locations->get("2,3"));
+    $this->locations->get("2,3")->linkTo($this->locations->get("2,4"));
     
     $this->locations->get("4,0")->linkTo($this->locations->get("4,1"));
     $this->locations->get("4,1")->linkTo($this->locations->get("4,2"));
+    $this->locations->get("4,2")->linkTo($this->locations->get("4,3"));
+    $this->locations->get("4,3")->linkTo($this->locations->get("4,4"));
     
     $this->locations->get("6,0")->linkTo($this->locations->get("6,1"));
     $this->locations->get("6,1")->linkTo($this->locations->get("6,2"));
+    $this->locations->get("6,2")->linkTo($this->locations->get("6,3"));
+    $this->locations->get("6,3")->linkTo($this->locations->get("6,4"));
     
     $this->locations->get("8,0")->linkTo($this->locations->get("8,1"));
     $this->locations->get("8,1")->linkTo($this->locations->get("8,2"));
+    $this->locations->get("8,2")->linkTo($this->locations->get("8,3"));
+    $this->locations->get("8,3")->linkTo($this->locations->get("8,4"));
   }
 }
 
@@ -149,24 +187,40 @@ $level = new Level(
     "10,0" => new Location(10,0),
     "2,1" => new Location(2,1),
     "2,2" => new Location(2,2),
+    "2,3" => new Location(2,3),
+    "2,4" => new Location(2,4),
     "4,1" => new Location(4,1),
     "4,2" => new Location(4,2),
+    "4,3" => new Location(4,3),
+    "4,4" => new Location(4,4),
     "6,1" => new Location(6,1),
     "6,2" => new Location(6,2),
+    "6,3" => new Location(6,3),
+    "6,4" => new Location(6,4),
     "8,1" => new Location(8,1),
     "8,2" => new Location(8,2),
+    "8,3" => new Location(8,3),
+    "8,4" => new Location(8,4),
   ])
 );
 
 $board = [
   "2,1" => $data[2][3],
   "2,2" => $data[3][3],
+  "2,3" => $data[4][3],
+  "2,4" => $data[5][3],
   "4,1" => $data[2][5],
   "4,2" => $data[3][5],
+  "4,3" => $data[4][5],
+  "4,4" => $data[5][5],
   "6,1" => $data[2][7],
   "6,2" => $data[3][7],
+  "6,3" => $data[4][7],
+  "6,4" => $data[5][7],
   "8,1" => $data[2][9],
   "8,2" => $data[3][9],
+  "8,3" => $data[4][9],
+  "8,4" => $data[5][9],
 ];
 
 function sameState(&$a, &$b) {
@@ -176,12 +230,20 @@ function sameState(&$a, &$b) {
 $endstate = [
   "2,1" => "A",
   "2,2" => "A",
+  "2,3" => "A",
+  "2,4" => "A",
   "4,1" => "B",
   "4,2" => "B",
+  "4,3" => "B",
+  "4,4" => "B",
   "6,1" => "C",
   "6,2" => "C",
+  "6,3" => "C",
+  "6,4" => "C",
   "8,1" => "D",
   "8,2" => "D",
+  "8,3" => "D",
+  "8,4" => "D",
 ];
 
 function isEndState(&$state) {
@@ -190,50 +252,7 @@ function isEndState(&$state) {
   return sameState($state, $endstate);
 }
 
-function isOnBoard($x, $y) {
-  return ($y === 0 && ($x >=0 && $x <= 10))
-    || (($y === 1 || $y === 2) && ($x === 2 || $x === 4 || $x === 6 || $x === 8));
-}
-
-function printLevel($state) {
-  for($y=0; $y<3; $y++) {
-    for($x=-1; $x<12; $x++) {
-      echo isOnBoard($x, $y) ? ($state["$x,$y"] ?? ".") : " ";
-    }
-    echo "\n";
-  }
-}
-
-try {
-  $colsOnTerminal = intval(trim(shell_exec('powershell $Host.UI.RawUI.WindowSize.Width')));
-} catch (Exception $_) {
-  echo "Warning! No powershell, no auto-width determining...\n";
-  $colsOnTerminal = 120;
-}
-
-function printLevels($statesWithCost) {
-  global $colsOnTerminal;
-  $chunksize = intdiv($colsOnTerminal, 16);
-
-  $all = (new Collection($statesWithCost))->chunk($chunksize);
-  echo "\n";
-  foreach ($all as $chunk) {
-    for($y = 0; $y < 3; $y++) {
-      for($tx = 0; $tx < $chunksize * 16; $tx++) {
-        $i = intdiv($tx, 16);
-        $currentState = $chunk->skip($i)->first();
-        if (!$currentState) break;
-        $x = $tx % 16;
-        echo isOnBoard($x, $y) ? ($currentState[1]["$x,$y"] ?? ".") : " ";
-      }
-      echo "\n";
-    }
-    echo "\n";
-    echo "\n";
-  }
-}
-
-function solvePart1($level, $board) {
+function solvePart2($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
   $statesWithCost = [0 => [$board]];
   $loop = 0;
@@ -250,23 +269,20 @@ function solvePart1($level, $board) {
 
     $statesToConsiderNext = $statesWithCost[$lowestCost];
 
-    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states (lowest known cost so far: $lowestKnownCostToEndState)\n";
+    if ($loop % 10 === 0)
+      echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states out of " . count($newStatesWithCost) . " states (lowest known cost so far: $lowestKnownCostToEndState)\n";
 
     if ($lowestCost >= $lowestKnownCostToEndState) {
       echo "About to start checking states that are already equal to the best possible solution, so we're done!\n";
       return $lowestKnownCostToEndState;
     }
 
-    //printLevels($statesToConsiderNext);
-    //if ($loop === 150) return -3;
-
-    foreach ($statesToConsiderNext as $state) {
+    foreach ($statesToConsiderNext as &$state) {
       if (in_array($state, $visited)) continue;
       else array_push($visited, $state);
 
       foreach ($state as $coords => $unit) {
         $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
-        // echo "Loop $loop checking $unit at $coords giving " . count($targets) . " extra targets\n";
 
         // This can be more efficient but oh well:
         // Consider only the goal if one of the targets is the goal.
@@ -297,4 +313,4 @@ function solvePart1($level, $board) {
   return -1;
 }
 
-echo "Solution 1: " . solvePart1($level, $board) . "\n";
+echo "Solution 2: " . solvePart2($level, $board) . "\n";
