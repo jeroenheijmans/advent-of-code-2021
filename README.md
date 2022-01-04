@@ -37,7 +37,7 @@ Some learned lesson for each day:
 20. Ugly code can be pragmatic code.
 21. TODO
 22. TODO
-23. TODO
+23. No code is often better than code.
 24. TODO
 25. There's (an) order to things in life.
 
