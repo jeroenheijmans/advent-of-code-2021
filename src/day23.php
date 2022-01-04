@@ -167,6 +167,26 @@ $board = [
   "8,2" => $data[3][9],
 ];
 
+// TODO: Is pass by reference more sane here?
+function sameState($a, $b) {
+  return empty(array_diff_assoc($a, $b));
+}
+
+function isEndState($state) {
+  $endstate = [
+    "2,1" => "A",
+    "2,2" => "A",
+    "4,1" => "B",
+    "4,2" => "B",
+    "6,1" => "C",
+    "6,2" => "C",
+    "8,1" => "D",
+    "8,2" => "D",
+  ];
+
+  return sameState($state, $endstate);
+}
+
 function solvePart1($level, $board) {
   $costPerStep = ["A" => 1, "B" => 10, "C" => 100, "D" => 1000];
 
@@ -194,27 +214,51 @@ function solvePart1($level, $board) {
   ]);
 
   $statesWithCost = [[0, $board]];
+  $loop = 0;
 
-  // Get all possible moves with their cost
-  $possibleStates = [];
-  foreach ($statesWithCost as [$cost, $state]) {
-    foreach ($state as $coords => $unit) {
-      
-      $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
+  while (true) {
+    if ($loop++ > 1000) throw new Error("Max loop reached");
 
-      // echo "Targets for $coords / $unit are:\n";
-      foreach ($targets as ["target" => $target, "steps" => $steps]) {
-        // echo "$target in $steps\n";
-        $newstate = $state;
-        unset($newstate[$coords]);
-        $newstate[$target] = $unit;
-        $newcost = $cost + ($steps * $costPerStep[$unit]);
-        $x = array_map(fn($k) => "$k ($newstate[$k])", array_keys($newstate));
-        echo "$unit at $coords moving to $target costs $newcost leading to newstate: [" . implode(" | ", $x) . "]\n";
+    $lowestCost = min(array_map(fn($entry) => $entry[0], $statesWithCost));
+    $newStatesWithCost = array_filter($statesWithCost, fn($entry) => $entry[0] > $lowestCost);
+    $statesToConsiderNext = array_filter($statesWithCost, fn($entry) => $entry[0] === $lowestCost);
+
+    echo "Loop $loop considering lowest cost states at $lowestCost: total " . count($statesToConsiderNext) . " states\n";
+
+    foreach ($statesToConsiderNext as [$cost, $state]) {
+      foreach ($state as $coords => $unit) {
+        
+        $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
+  
+        // echo "Targets for $coords / $unit are:\n";
+        foreach ($targets as ["target" => $target, "steps" => $steps]) {
+          // echo "$target in $steps\n";
+          $newstate = $state;
+          unset($newstate[$coords]);
+          $newstate[$target] = $unit;
+          $newcost = $cost + ($steps * $costPerStep[$unit]);
+          // $x = array_map(fn($k) => "$k ($newstate[$k])", array_keys($newstate));
+          // echo "$unit at $coords moving to $target costs $newcost leading to newstate: [" . implode(" | ", $x) . "]\n";
+          ksort($newstate);
+
+          $stateAlreadyKnown = false;
+          foreach ($newStatesWithCost as $key => $value) {
+            if ($value[1] === $newstate && $value[0] > $newcost) {
+              $newstate[$key][0] = $newcost;
+              $stateAlreadyKnown = true;
+              break; // We should have each state in the array only once!!
+            }
+          }
+
+          if (!$stateAlreadyKnown) array_push($newStatesWithCost, [$newcost, $newstate]);
+
+          // If there is a winning move, there will be only exactly one so we can immediately return:
+          if (isEndState($newstate)) return $newcost;
+        }
       }
-
-      return -2;
     }
+
+    $statesWithCost = $newStatesWithCost;
   }
 
   return -1;
