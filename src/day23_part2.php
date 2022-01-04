@@ -262,6 +262,11 @@ function solvePart2($level, $board) {
   while (true) {
     if ($loop++ > 1_00_000) throw new Error("Max loop reached");
 
+    if (empty($statesWithCost)) {
+      echo "No more further states, so we're (hopefully!?) done!\n";
+      return $lowestKnownCostToEndState;
+    }
+
     $lowestCost = min(array_keys($statesWithCost));
 
     $newStatesWithCost = $statesWithCost; // clone array
