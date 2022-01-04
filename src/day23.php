@@ -92,11 +92,11 @@ class Location {
     if ($this->key !== $coords) {
       // ... AND EITHER I'm a goal
       if ($iAmTheEndGoal) {
-        $baseTargets->push(["target" => $this->key, "steps" => $steps]);
+        $baseTargets->push(["target" => $this->key, "steps" => $steps, "isgoal" => true]);
       }
       // ... OR I'm not a hallway-to-hallway move
       else if ($this->isHallwayStop() && !str_ends_with($coords, ",0")) {
-        $baseTargets->push(["target" => $this->key, "steps" => $steps]);
+        $baseTargets->push(["target" => $this->key, "steps" => $steps, "isgoal" => false]);
       }
     }
 
@@ -251,7 +251,7 @@ function solvePart1($level, $board) {
   $loop = 0;
 
   while (true) {
-    if ($loop++ > 10000) throw new Error("Max loop reached");
+    if ($loop++ > 1_00_000) throw new Error("Max loop reached");
 
     $lowestCost = min(array_map(fn($entry) => $entry[0], $statesWithCost));
     $newStatesWithCost = array_filter($statesWithCost, fn($entry) => $entry[0] > $lowestCost);
@@ -269,6 +269,11 @@ function solvePart1($level, $board) {
         
         $targets = $level->locations->get($coords)->findTargetsFor($state, $coords);
         // echo "Loop $loop checking $unit at $coords giving " . count($targets) . " extra targets\n";
+
+        // This can be more efficient but oh well:
+        // Consider only the goal if one of the targets is the goal.
+        $goals = $targets->filter(fn($entry) => $entry["isgoal"]);
+        if (!$goals->empty()) $targets = $goals;
   
         foreach ($targets as ["target" => $target, "steps" => $steps]) {
           $newstate = $state;
@@ -285,8 +290,6 @@ function solvePart1($level, $board) {
               break; // We should have each state in the array only once!!
             }
           }
-
-          // Idea for speedup: if some "targets" will put the unit in a end spot, don't consider any other targets at all...
 
           if (!$stateAlreadyKnown) array_push($newStatesWithCost, [$newcost, $newstate]);
 
