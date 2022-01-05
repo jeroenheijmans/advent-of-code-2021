@@ -44,10 +44,17 @@ for ($die1 = 1; $die1 <= 3; $die1++)
       array_push($rolls, $die1 + $die2 + $die3);
 $rollCounts = array_count_values($rolls);
 
-$maxScore = 19;
+$maxScore = 21;
+
+$memoizedWinsByStateAndActivePlayer = [];
 
 function playRecursive($state, $activePlayer = 0) {
   global $rollCounts, $maxScore;
+  global $memoizedWinsByStateAndActivePlayer;
+
+  $key = implode(";", [$state[0][0], $state[0][0], $state[0][0], $state[0][0], $activePlayer]);
+
+  if (array_key_exists($key, $memoizedWinsByStateAndActivePlayer)) return $memoizedWinsByStateAndActivePlayer[$key];
 
   $winsPerPlayerInThisRound = [0, 0];
 
@@ -57,7 +64,7 @@ function playRecursive($state, $activePlayer = 0) {
     if ($newstate[$activePlayer][0] > 10) $newstate[$activePlayer][0] -= 10; // Wrap around
     $newstate[$activePlayer][1] += $newstate[$activePlayer][0]; // Add position to score
 
-    if ($newstate[$activePlayer][1] > $maxScore) {
+    if ($newstate[$activePlayer][1] >= $maxScore) {
       $winsPerPlayerInThisRound[$activePlayer] += $occurences;
     } else {
       $deeperWins = playRecursive($newstate, $activePlayer === 0 ? 1 : 0);
@@ -65,6 +72,8 @@ function playRecursive($state, $activePlayer = 0) {
       $winsPerPlayerInThisRound[1] += $deeperWins[1] * $occurences;
     }
   }
+
+  $memoizedWinsByStateAndActivePlayer[$key] = $winsPerPlayerInThisRound;
 
   return $winsPerPlayerInThisRound;
 }
