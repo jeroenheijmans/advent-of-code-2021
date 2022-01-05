@@ -37,41 +37,45 @@ function solvePart1() {
   return min($score1, $score2) * $rolls;
 }
 
-function playRecursive($players, $activePlayer = 0, $rollsLeft = 3) {
-  if ($rollsLeft === 0) {
-    $newscore = $players[$activePlayer][1] + $players[$activePlayer][0];
-    if ($newscore >= 8) {
-      return $activePlayer === 0 ? [1, 0] : [0, 1];
-    }
-    $players[$activePlayer][1] = $newscore;
-    return playRecursive($players, $activePlayer === 0 ? 1 : 0);
-  } else {
-    $rollsLeft--;
-    $players1 = $players;
-    $players2 = $players;
-    $players3 = $players;
-    $players1[$activePlayer][0] += 1;
-    $players2[$activePlayer][0] += 2;
-    $players3[$activePlayer][0] += 3;
-    if ($players1[$activePlayer][0] > 10) $players1[$activePlayer][0] -= 10;
-    if ($players2[$activePlayer][0] > 10) $players2[$activePlayer][0] -= 10;
-    if ($players3[$activePlayer][0] > 10) $players3[$activePlayer][0] -= 10;
-    $result1 = playRecursive($players1, $activePlayer, $rollsLeft);
-    $result2 = playRecursive($players2, $activePlayer, $rollsLeft);
-    $result3 = playRecursive($players3, $activePlayer, $rollsLeft);
+$rolls = [];
+for ($die1 = 1; $die1 <= 3; $die1++)
+  for ($die2 = 1; $die2 <= 3; $die2++)
+    for ($die3 = 1; $die3 <= 3; $die3++)
+      array_push($rolls, $die1 + $die2 + $die3);
+$rollCounts = array_count_values($rolls);
 
-    return [
-      $result1[0] + $result2[0] + $result3[0],
-      $result1[1] + $result2[1] + $result3[1],
-    ];
+$maxScore = 19;
+
+function playRecursive($state, $activePlayer = 0) {
+  global $rollCounts, $maxScore;
+
+  $winsPerPlayerInThisRound = [0, 0];
+
+  foreach ($rollCounts as $roll => $occurences) {
+    $newstate = $state; // Duplicate state
+    $newstate[$activePlayer][0] += $roll; // Move by roll
+    if ($newstate[$activePlayer][0] > 10) $newstate[$activePlayer][0] -= 10; // Wrap around
+    $newstate[$activePlayer][1] += $newstate[$activePlayer][0]; // Add position to score
+
+    if ($newstate[$activePlayer][1] > $maxScore) {
+      $winsPerPlayerInThisRound[$activePlayer] += $occurences;
+    } else {
+      $deeperWins = playRecursive($newstate, $activePlayer === 0 ? 1 : 0);
+      $winsPerPlayerInThisRound[0] += $deeperWins[0] * $occurences;
+      $winsPerPlayerInThisRound[1] += $deeperWins[1] * $occurences;
+    }
   }
+
+  return $winsPerPlayerInThisRound;
 }
 
 function solvePart2() {
+  global $maxScore;
   $p1 = 4;
   $p2 = 8;
   $result = playRecursive([[$p1, 0], [$p2, 0]]);
-  return $result[0];
+  
+  return "\n    Using max score of $maxScore\n    Player 1 wins: $result[0]\n    Player 2 wins: $result[1]\n";
 }
 
 echo "Solution 1: " . solvePart1() . "\n";
