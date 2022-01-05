@@ -35,7 +35,7 @@ Some learned lesson for each day:
 18. _"I have no time to go fast!"_
 19. Persistence is key.
 20. Ugly code can be pragmatic code.
-21. TODO
+21. Memorize the need for memoization.
 22. TODO
 23. No code is often better than code.
 24. TODO
