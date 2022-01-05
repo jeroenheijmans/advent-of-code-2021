@@ -40,23 +40,38 @@ function solvePart1() {
 function playRecursive($players, $activePlayer = 0, $rollsLeft = 3) {
   if ($rollsLeft === 0) {
     $newscore = $players[$activePlayer][1] + $players[$activePlayer][0];
-    if ($newscore >= 21) {
+    if ($newscore >= 8) {
       return $activePlayer === 0 ? [1, 0] : [0, 1];
     }
     $players[$activePlayer][1] = $newscore;
     return playRecursive($players, $activePlayer === 0 ? 1 : 0);
   } else {
-    // roll 1
-    // roll 2
-    // roll 3
-    // concatenate results from all rolls
+    $rollsLeft--;
+    $players1 = $players;
+    $players2 = $players;
+    $players3 = $players;
+    $players1[$activePlayer][0] += 1;
+    $players2[$activePlayer][0] += 2;
+    $players3[$activePlayer][0] += 3;
+    if ($players1[$activePlayer][0] > 10) $players1[$activePlayer][0] -= 10;
+    if ($players2[$activePlayer][0] > 10) $players2[$activePlayer][0] -= 10;
+    if ($players3[$activePlayer][0] > 10) $players3[$activePlayer][0] -= 10;
+    $result1 = playRecursive($players1, $activePlayer, $rollsLeft);
+    $result2 = playRecursive($players2, $activePlayer, $rollsLeft);
+    $result3 = playRecursive($players3, $activePlayer, $rollsLeft);
+
+    return [
+      $result1[0] + $result2[0] + $result3[0],
+      $result1[1] + $result2[1] + $result3[1],
+    ];
   }
 }
 
 function solvePart2() {
   $p1 = 4;
   $p2 = 8;
-  return playRecursive([[$p1, 0], [$p2, 0]]);
+  $result = playRecursive([[$p1, 0], [$p2, 0]]);
+  return $result[0];
 }
 
 echo "Solution 1: " . solvePart1() . "\n";
