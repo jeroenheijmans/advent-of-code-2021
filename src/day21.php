@@ -48,15 +48,16 @@ $maxScore = 21;
 
 $memoizedWinsByStateAndActivePlayer = [];
 
-function playRecursive($state, $activePlayer = 0) {
+function playRecursive($state, $activePlayer = 0, $roundsPlayed = 0) {
   global $rollCounts, $maxScore;
   global $memoizedWinsByStateAndActivePlayer;
 
-  $key = implode(";", [$state[0][0], $state[0][0], $state[0][0], $state[0][0], $activePlayer]);
+  $key = implode("; ", [$state[0][0], $state[0][1], $state[1][0], $state[1][1], $activePlayer, $roundsPlayed]);
 
   if (array_key_exists($key, $memoizedWinsByStateAndActivePlayer)) return $memoizedWinsByStateAndActivePlayer[$key];
 
   $winsPerPlayerInThisRound = [0, 0];
+  $roundsPlayed++;
 
   foreach ($rollCounts as $roll => $occurences) {
     $newstate = $state; // Duplicate state
@@ -67,7 +68,7 @@ function playRecursive($state, $activePlayer = 0) {
     if ($newstate[$activePlayer][1] >= $maxScore) {
       $winsPerPlayerInThisRound[$activePlayer] += $occurences;
     } else {
-      $deeperWins = playRecursive($newstate, $activePlayer === 0 ? 1 : 0);
+      $deeperWins = playRecursive($newstate, $activePlayer === 0 ? 1 : 0, $roundsPlayed);
       $winsPerPlayerInThisRound[0] += $deeperWins[0] * $occurences;
       $winsPerPlayerInThisRound[1] += $deeperWins[1] * $occurences;
     }
@@ -81,10 +82,11 @@ function playRecursive($state, $activePlayer = 0) {
 function solvePart2() {
   global $maxScore;
   $p1 = 4;
-  $p2 = 8;
+  $p2 = 5;
   $result = playRecursive([[$p1, 0], [$p2, 0]]);
+  $answer = max($result);
   
-  return "\n    Using max score of $maxScore\n    Player 1 wins: $result[0]\n    Player 2 wins: $result[1]\n";
+  return "$answer\n    Using max score of $maxScore\n    Player 1 wins: $result[0]\n    Player 2 wins: $result[1]\n";
 }
 
 echo "Solution 1: " . solvePart1() . "\n";
