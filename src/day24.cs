@@ -8,45 +8,38 @@ static long Run(string digits) {
   long x, output = 0;
   
   // Digit 01
-  x = (output % 26) + 13;
-  if (x != inputs[0]) output = (output * 26) + (inputs[0] + 6);
+  output =                  inputs[0] + 6;
 
   // Digit 02
-  x = (output % 26) + 15;
-  if (x != inputs[1]) output = (output * 26) + (inputs[1] + 7);
+  output = (output * 26) + (inputs[1] + 7);
 
   // Digit 03
-  x = (output % 26) + 15;
-  if (x != inputs[2]) output = (output * 26) + (inputs[2] + 10);
+  output = (output * 26) + (inputs[2] + 10);
 
   // Digit 04
-  x = (output % 26) + 11;
-  if (x != inputs[3]) output = (output * 26) + (inputs[3] + 2);
+  output = (output * 26) + (inputs[3] + 2);
 
   // Digit 05
-  x = (output % 26) + -7;
+  x = inputs[3] - 5;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
   if (x != inputs[4]) output = (output * 26) + (inputs[4] + 15);
 
   // Digit 06
-  x = (output % 26) + 10;
-  if (x != inputs[5]) output = (output * 26) + (inputs[5] + 8);
+  output = (output * 26) + (inputs[5] + 8);
 
   // Digit 07
-  x = (output % 26) + 10;
-  if (x != inputs[6]) output = (output * 26) + (inputs[6] + 1);
+  output = (output * 26) + (inputs[6] + 1);
 
   // Digit 08
-  x = (output % 26) + -5;
+  x = inputs[6] - 4;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
   if (x != inputs[7]) output = (output * 26) + (inputs[7] + 10);
 
   // Digit 09
-  x = (output % 26) + 15;
-  if (x != inputs[8]) output = (output * 26) + (inputs[8] + 5);
+  output = (output * 26) + (inputs[8] + 5);
 
   // Digit 10
-  x = (output % 26) + -3;
+  x = inputs[8] + 2;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
   if (x != inputs[9]) output = (output * 26) + (inputs[9] + 3);
 
