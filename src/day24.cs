@@ -8,16 +8,10 @@ static long Run(string digits) {
   long x, output = 0;
   
   // Digit 01
-  output =                  inputs[0] + 6;
-
   // Digit 02
-  output = (output * 26) + (inputs[1] + 7);
-
   // Digit 03
-  output = (output * 26) + (inputs[2] + 10);
-
   // Digit 04
-  output = (output * 26) + (inputs[3] + 2);
+  output = (inputs[0] * 17_576) + (inputs[1] * 676) + (inputs[2] * 26) + inputs[3] + 110_450;
 
   // Digit 05
   x = inputs[3] - 5;
@@ -70,7 +64,7 @@ long i = 0;
 Console.WriteLine("Starting day 24 in csharp...");
 i = 13579246899999; Console.WriteLine($"{i} gives result {Run(i.ToString())}\n");
 
-i = 19894995791791; Console.WriteLine($"{i.ToString()} gives result 1: {Run(i.ToString())}");
+i = 19894995792792; Console.WriteLine($"{i.ToString()} gives result 1: {Run(i.ToString())}");
 i = 29894995792792; Console.WriteLine($"{i.ToString()} gives result 2: {Run(i.ToString())}");
 i = 39894995793793; Console.WriteLine($"{i.ToString()} gives result 3: {Run(i.ToString())}");
 i = 49894995794794; Console.WriteLine($"{i.ToString()} gives result 4: {Run(i.ToString())}");
