@@ -2,70 +2,70 @@ using System;
 using System.Linq;
 
 static void RunProgram() {
-  long input, x, y, output;
+  long x, output = 0;
 
-  input = nextDigit(); // Digit 01
+  // Digit 01
   x = (output % 26) + 13;
-  if (x != input) output = (output * 26) + (input + 6);
+  if (x != input()) output = (output * 26) + (input + 6);
 
-  input = nextDigit(); // Digit 02
+  // Digit 02
   x = (output % 26) + 15;
-  if (x != input) output = (output * 26) + (input + 7);
+  if (x != input()) output = (output * 26) + (input + 7);
 
-  input = nextDigit(); // Digit 03
+  // Digit 03
   x = (output % 26) + 15;
-  if (x != input) output = (output * 26) + (input + 10);
+  if (x != input()) output = (output * 26) + (input + 10);
 
-  input = nextDigit(); // Digit 04
+  // Digit 04
   x = (output % 26) + 11;
-  if (x != input) output = (output * 26) + (input + 2);
+  if (x != input()) output = (output * 26) + (input + 2);
 
-  input = nextDigit(); // Digit 05
+  // Digit 05
   x = (output % 26) + -7;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 15);
+  if (x != input()) output = (output * 26) + (input + 15);
 
-  input = nextDigit(); // Digit 06
+  // Digit 06
   x = (output % 26) + 10;
-  if (x != input) output = (output * 26) + (input + 8);
+  if (x != input()) output = (output * 26) + (input + 8);
 
-  input = nextDigit(); // Digit 07
+  // Digit 07
   x = (output % 26) + 10;
-  if (x != input) output = (output * 26) + (input + 1);
+  if (x != input()) output = (output * 26) + (input + 1);
 
-  input = nextDigit(); // Digit 08
+  // Digit 08
   x = (output % 26) + -5;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 10);
+  if (x != input()) output = (output * 26) + (input + 10);
 
-  input = nextDigit(); // Digit 09
+  // Digit 09
   x = (output % 26) + 15;
-  if (x != input) output = (output * 26) + (input + 5);
+  if (x != input()) output = (output * 26) + (input + 5);
 
-  input = nextDigit(); // Digit 10
+  // Digit 10
   x = (output % 26) + -3;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 3);
+  if (x != input()) output = (output * 26) + (input + 3);
 
-  input = nextDigit(); // Digit 11
+  // Digit 11
   x = (output % 26) + 0;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 5);
+  if (x != input()) output = (output * 26) + (input + 5);
 
-  input = nextDigit(); // Digit 12
+  // Digit 12
   x = (output % 26) + -5;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 11);
+  if (x != input()) output = (output * 26) + (input + 11);
 
-  input = nextDigit(); // Digit 13
+  // Digit 13
   x = (output % 26) + -9;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 12);
+  if (x != input()) output = (output * 26) + (input + 12);
 
-  input = nextDigit(); // Digit 14
+  // Digit 14
   x = (output % 26) + 0;
   output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != input) output = (output * 26) + (input + 10);
+  if (x != input()) output = (output * 26) + (input + 10);
 }
 
 Console.WriteLine("Working!");
