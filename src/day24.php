@@ -625,6 +625,10 @@ function runProgram($program, $inputs) {
   return $memory["z"];
 }
 
+echo runProgram($program, [1,3,5,7,9,2,4,6,8,9,9,9,9,9]);
+
+throw new Error('...');
+
 function solvePart1($program): int {
 
   $inputs = 99999999999999;
