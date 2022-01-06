@@ -118,6 +118,10 @@ class Cube {
     $this->maxz = max($z1, $z2);
   }
 
+  public function volume() {
+    return ($this->maxx - $this->minx) * ($this->maxy - $this->miny) * ($this->maxz - $this->minz);
+  }
+
   public function overlapsWith($other) {
     return
       $this->maxx >= $other->minx &&
@@ -142,13 +146,41 @@ class Cube {
       && $this->minz >= $other->minz;
       
   }
+
+  public function containsPoint($x, $y, $z) {
+    return
+      $x <= $this->maxx && $x >= $this->minx &&
+      $y <= $this->maxy && $y >= $this->miny &&
+      $z <= $this->maxz && $z >= $this->minz;
+  }
+
+  public function cutInPiecesAt($x, $y, $z) {
+    if (!$this->containsPoint($x, $y, $z)) throw new Error("Cannot cut at point outside of myself");
+
+    $result = new Collection();
+
+    new Cube($x + 0, $y + 0, $z + 0, $this->minx, $this->miny, $this->minz);
+    new Cube($x + 0, $y + 0, $z + 1, $this->minx, $this->miny, $this->maxz);
+    new Cube($x + 0, $y + 1, $z + 0, $this->minx, $this->maxy, $this->minz);
+    new Cube($x + 0, $y + 1, $z + 1, $this->minx, $this->maxy, $this->maxz);
+    new Cube($x + 1, $y + 0, $z + 0, $this->maxx, $this->miny, $this->minz);
+    new Cube($x + 1, $y + 0, $z + 1, $this->maxx, $this->miny, $this->maxz);
+    new Cube($x + 1, $y + 1, $z + 0, $this->maxx, $this->maxy, $this->minz);
+    new Cube($x + 1, $y + 1, $z + 1, $this->maxx, $this->maxy, $this->maxz);
+
+    return $result->filter(fn($newcube) => !$newcube->containedWithin($this));
+  }
+
+  public function __toString() {
+    return "Cuboid from $this->minx;$this->miny;$this->minz to $this->maxx;$this->maxy;$this->maxz";
+  }
 }
 
 function solvePart2($data) {
   $litcubes = new Collection();
 
   foreach ($data as $line) {
-    echo "Processing: $line\n";
+    echo "        Processing: $line\n";
 
     preg_match("/(\S+) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)/", $line, $matches);
     $instruction = $matches[1];
@@ -161,21 +193,42 @@ function solvePart2($data) {
 
     $current = new Cube($x1, $y1, $z1, $x2, $y2, $z2);
 
-    $newstate = $litcubes->filter(fn($cube) => !$cube->overlapsWith($current))->transform(fn($cube) => clone $cube);
-    $overlappingCubes = $litcubes->filter(fn($cube) => $cube->overlapsWith($current));
+    $state = $litcubes->transform(fn($cube) => clone $cube);
+
+    $loop = 0;
+    do {
+      $newstate = $state
+        ->filter(fn($cube) => !$cube->overlapsWith($current))
+        ->transform(fn($cube) => clone $cube);
+
+      $overlappingCubes = $state
+        ->filter(fn($cube) => $cube->overlapsWith($current))
+        ->filter(fn($c) => !$c->containedWithin($current));
+
+      if ($overlappingCubes->isEmpty()) break; // No more partially overlapping cubes!
+
+      foreach ($overlappingCubes as $other) {
+        echo "[Loop $loop] Checking overlapper $other\n";
+
+        $x = max($current->minx, $other->minx); if ($x === $other->minx) $x = min($current->maxx, $other->maxx);
+        $y = max($current->miny, $other->miny); if ($y === $other->miny) $y = min($current->maxy, $other->maxy);
+        $z = max($current->minz, $other->minz); if ($z === $other->minz) $z = min($current->maxz, $other->maxz);
+
+        $result = $other->cutInPiecesAt($x, $y, $z);
+        $newstate = $newstate->concat($result);
+      }
+
+      $state = $newstate;
+
+      if ($loop++ > 10) throw new Error("bug?");
+    } while (true);
 
     switch ($instruction) {
       case "on":
-        // Ignore cubes completely within:
-        $overlappingCubes = $overlappingCubes->filter(fn($c) => !$c->containedWithin($current));
-
-        if ($overlappingCubes->isEmpty()) {
-          $newstate->push($current);
-        } else {
-          echo "TODO: Overlaps and 'on' instruction\n";
-        }
+        $newstate->push($current);
+        break;
       case "off":
-        // throw new Error("not implemented yet");
+        // Nothing to do here, we cut off the pieces with filters already.
         break;
       default:
         throw new Error("Unknown instruction: $instruction");
@@ -184,7 +237,7 @@ function solvePart2($data) {
     $litcubes = $newstate;
   }
 
-  return -1; // TODO: Count how many cubes fall in "on" areas
+  return $litcubes->map(fn($c) => $c->volume())->sum();
 }
 
 echo "Solution 1: " . solvePart1($data) . "\n";
