@@ -159,14 +159,15 @@ class Cube {
 
     $result = new Collection();
 
-    new Cube($x + 0, $y + 0, $z + 0, $this->minx, $this->miny, $this->minz);
-    new Cube($x + 0, $y + 0, $z + 1, $this->minx, $this->miny, $this->maxz);
-    new Cube($x + 0, $y + 1, $z + 0, $this->minx, $this->maxy, $this->minz);
-    new Cube($x + 0, $y + 1, $z + 1, $this->minx, $this->maxy, $this->maxz);
-    new Cube($x + 1, $y + 0, $z + 0, $this->maxx, $this->miny, $this->minz);
-    new Cube($x + 1, $y + 0, $z + 1, $this->maxx, $this->miny, $this->maxz);
-    new Cube($x + 1, $y + 1, $z + 0, $this->maxx, $this->maxy, $this->minz);
-    new Cube($x + 1, $y + 1, $z + 1, $this->maxx, $this->maxy, $this->maxz);
+    // Bug? $x/$y/$z is now counted double
+    $result->push(new Cube($x, $y, $z, $this->minx, $this->miny, $this->minz));
+    $result->push(new Cube($x, $y, $z, $this->minx, $this->miny, $this->maxz));
+    $result->push(new Cube($x, $y, $z, $this->minx, $this->maxy, $this->minz));
+    $result->push(new Cube($x, $y, $z, $this->minx, $this->maxy, $this->maxz));
+    $result->push(new Cube($x, $y, $z, $this->maxx, $this->miny, $this->minz));
+    $result->push(new Cube($x, $y, $z, $this->maxx, $this->miny, $this->maxz));
+    $result->push(new Cube($x, $y, $z, $this->maxx, $this->maxy, $this->minz));
+    $result->push(new Cube($x, $y, $z, $this->maxx, $this->maxy, $this->maxz));
 
     return $result->filter(fn($newcube) => !$newcube->containedWithin($this));
   }
@@ -180,7 +181,7 @@ function solvePart2($data) {
   $litcubes = new Collection();
 
   foreach ($data as $line) {
-    echo "        Processing: $line\n";
+    echo "\nProcessing: $line\n";
 
     preg_match("/(\S+) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)/", $line, $matches);
     $instruction = $matches[1];
@@ -215,12 +216,13 @@ function solvePart2($data) {
         $z = max($current->minz, $other->minz); if ($z === $other->minz) $z = min($current->maxz, $other->maxz);
 
         $result = $other->cutInPiecesAt($x, $y, $z);
+        // foreach($result as $c) echo "            Result in $c\n";
         $newstate = $newstate->concat($result);
       }
 
       $state = $newstate;
 
-      if ($loop++ > 10) throw new Error("bug?");
+      if ($loop++ > 25) throw new Error("bug?");
     } while (true);
 
     switch ($instruction) {
