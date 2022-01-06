@@ -77,24 +77,12 @@ long i = 0;
 Console.WriteLine("Starting day 24 in csharp...");
 i = 13579246899999; Console.WriteLine($"{i} gives result {Run(i.ToString())}\n");
 
-i = 12161195799799; Console.WriteLine($"{i.ToString()} gives result 1: {Run(i.ToString())}");
-i = 12261195799799; Console.WriteLine($"{i.ToString()} gives result 2: {Run(i.ToString())}");
-i = 12361195799799; Console.WriteLine($"{i.ToString()} gives result 3: {Run(i.ToString())}");
-i = 12461195799799; Console.WriteLine($"{i.ToString()} gives result 4: {Run(i.ToString())}");
-i = 12561195799799; Console.WriteLine($"{i.ToString()} gives result 5: {Run(i.ToString())}");
-i = 12661195799799; Console.WriteLine($"{i.ToString()} gives result 6: {Run(i.ToString())}");
-i = 12761195799799; Console.WriteLine($"{i.ToString()} gives result 7: {Run(i.ToString())}");
-i = 12861195799799; Console.WriteLine($"{i.ToString()} gives result 8: {Run(i.ToString())}");
-i = 12961195799799; Console.WriteLine($"{i.ToString()} gives result 9: {Run(i.ToString())}");
-
-long c = 0;
-i = 13579246899999; // start from the example and go up to see if we get lucky
-while (true) {
-  i += 100000;
-  var result = Run(i.ToString());
-  if (result == 0) {
-    Console.WriteLine($"Result {result} for {i}");
-    throw new Exception("Done!");
-  }
-  if (c++ % 100_000 == 0) Console.WriteLine($"At {i}");
-}
+i = 19894995791791; Console.WriteLine($"{i.ToString()} gives result 1: {Run(i.ToString())}");
+i = 29894995792792; Console.WriteLine($"{i.ToString()} gives result 2: {Run(i.ToString())}");
+i = 39894995793793; Console.WriteLine($"{i.ToString()} gives result 3: {Run(i.ToString())}");
+i = 49894995794794; Console.WriteLine($"{i.ToString()} gives result 4: {Run(i.ToString())}");
+i = 59894995795795; Console.WriteLine($"{i.ToString()} gives result 5: {Run(i.ToString())}");
+i = 69894995796796; Console.WriteLine($"{i.ToString()} gives result 6: {Run(i.ToString())}");
+i = 79894995797797; Console.WriteLine($"{i.ToString()} gives result 7: {Run(i.ToString())}");
+i = 89894995798798; Console.WriteLine($"{i.ToString()} gives result 8: {Run(i.ToString())}");
+i = 99894995799799; Console.WriteLine($"{i.ToString()} gives result 9: {Run(i.ToString())}");
