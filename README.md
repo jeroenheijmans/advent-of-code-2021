@@ -36,7 +36,7 @@ Some learned lesson for each day:
 19. Persistence is key.
 20. Ugly code can be pragmatic code.
 21. Memorize the need for memoization.
-22. TODO
+22. Game Development == Math.
 23. No code is often better than code.
 24. TODO
 25. There's (an) order to things in life.
