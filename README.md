@@ -11,6 +11,8 @@ Requirements:
 
 Install Composer's dependencies and then run a day with `php ./src/day01.php` or similar.
 
+PS. For day 24 there's a compendium C# file requiring a recent dotnet runtime to run.
+
 ## Lessons Learned
 
 Some learned lesson for each day:
@@ -46,9 +48,12 @@ Some learned lesson for each day:
 I've created a browser extension for [Google Chrome](https://chrome.google.com/webstore/detail/ipbomkmbokofodhhjpipflmdplipblbe) and [Mozilla Firefox](https://addons.mozilla.org/en-US/firefox/addon/advent-of-code-charts/).
 It is [open source](https://github.com/jeroenheijmans/advent-of-code-charts) to spice up your private leaderboard page with graphs if you want to contribute!
 
-In addition, you can also check my previous editions' repositories:
+Here's direct links to every year's solutions I have so far:
 
+- Advent of Code 2015 solutions: not available yet!
+- Advent of Code 2016 solutions: not available yet!
 - [Advent of Code 2017 solutions](https://github.com/jeroenheijmans/advent-of-code-2017), in JavaScript
 - [Advent of Code 2018 solutions](https://github.com/jeroenheijmans/advent-of-code-2018), in C#
 - [Advent of Code 2019 solutions](https://github.com/jeroenheijmans/advent-of-code-2019), in Python
 - [Advent of Code 2020 solutions](https://github.com/jeroenheijmans/advent-of-code-2020), in TypeScript
+- [Advent of Code 2021 solutions](https://github.com/jeroenheijmans/advent-of-code-2021), in PHP
