@@ -38,7 +38,7 @@ Some learned lesson for each day:
 21. Memorize the need for memoization.
 22. Game Development == Math.
 23. No code is often better than code.
-24. TODO
+24. Reading low(er) level code is a skill apart.
 25. There's (an) order to things in life.
 
 ## Compendium Repositories
