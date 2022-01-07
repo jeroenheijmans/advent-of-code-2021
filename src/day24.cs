@@ -1,75 +1,102 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-static long Run(string digits) {
-  if (digits.Length != 14) throw new Exception("Serial not 14 long!");
-  long[] inputs = digits.Select(d => (long)(d - '0')).ToArray();
-  long x, output = 0;
-  
-  // Digit 01
-  // Digit 02
-  // Digit 03
-  // Digit 04
-  output = (inputs[0] * 17_576) + (inputs[1] * 676) + (inputs[2] * 26) + inputs[3] + 110_450;
+namespace AdventOfCode2021Day24
+{
+    class Program
+    {
+        static int Main(string[] args)
+        {
+            if (args.Length != 2)
+            {
+                Console.WriteLine("Precisely 2 arguments needed to tell us the range for digit 1, so you can parallelize starting digits. Search default is descending (puzzle part 1).");
+                return 1;
+            }
 
-  // Digit 05
-  x = inputs[3] - 5;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[4]) output = (output * 26) + (inputs[4] + 15);
+            int a = int.Parse(args[0]);
+            int b = int.Parse(args[1]);
+            Console.WriteLine($"Starting digit from {a} to {b}");
 
-  // Digit 06
-  output = (output * 26) + (inputs[5] + 8);
+            unchecked
+            {
 
-  // Digit 07
-  output = (output * 26) + (inputs[6] + 1);
+                for (int d1 = a; d1 > b; d1--)
+                    for (int d2 = 9; d2 > 0; d2--)
+                        for (int d3 = 9; d3 > 0; d3--)
+                            for (int d4 = 9; d4 > 0; d4--)
+                                for (int d5 = 9; d5 > 0; d5--)
+                                    for (int d6 = 9; d6 > 0; d6--)
+                                    {
+                                        Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} --- Starting work on {d1}{d2}{d3}{d4}{d5}{d6}...");
+                                        for (int d7 = 9; d7 > 0; d7--)
+                                            for (int d8 = 9; d8 > 0; d8--)
+                                                for (int d9 = 9; d9 > 0; d9--)
+                                                    for (int da = 9; da > 0; da--)
+                                                        for (int db = 9; db > 0; db--)
+                                                            for (int dc = 9; dc > 0; dc--)
+                                                                for (int dd = 9; dd > 0; dd--)
+                                                                    for (int de = 9; de > 0; de--)
+                                                                    {
+                                                                        long output = 0, x;
 
-  // Digit 08
-  x = inputs[6] - 4;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[7]) output = (output * 26) + (inputs[7] + 10);
+                                                                        // Digit 01 - 04
+                                                                        output = (d1 * 17_576) + (d2 * 676) + (d3 * 26) + d4 + 110_450;
 
-  // Digit 09
-  output = (output * 26) + (inputs[8] + 5);
+                                                                        // Digit 05
+                                                                        x = d4 - 5;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != d5) output = (output * 26) + (d5 + 15);
 
-  // Digit 10
-  x = inputs[8] + 2;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[9]) output = (output * 26) + (inputs[9] + 3);
+                                                                        // Digit 06
+                                                                        output = (output * 26) + (d6 + 8);
 
-  // Digit 11
-  x = (output % 26) + 0;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[10]) output = (output * 26) + (inputs[10] + 5);
+                                                                        // Digit 07
+                                                                        output = (output * 26) + (d7 + 1);
 
-  // Digit 12
-  x = (output % 26) + -5;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[11]) output = (output * 26) + (inputs[11] + 11);
+                                                                        // Digit 08
+                                                                        x = d7 - 4;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != d8) output = (output * 26) + (d8 + 10);
 
-  // Digit 13
-  x = (output % 26) + -9;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[12]) output = (output * 26) + (inputs[12] + 12);
+                                                                        // Digit 09
+                                                                        output = (output * 26) + (d9 + 5);
 
-  // Digit 14
-  x = (output % 26) + 0;
-  output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
-  if (x != inputs[13]) output = (output * 26) + (inputs[13] + 10);
+                                                                        // Digit 10
+                                                                        x = d9 + 2;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != da) output = (output * 26) + (da + 3);
 
-  return output;
+                                                                        // Digit 11
+                                                                        x = (output % 26) + 0;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != db) output = (output * 26) + (db + 5);
+
+                                                                        // Digit 12
+                                                                        x = (output % 26) + -5;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != dc) output = (output * 26) + (dc + 11);
+
+                                                                        // Digit 13
+                                                                        x = (output % 26) + -9;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != dd) output = (output * 26) + (dd + 12);
+
+                                                                        // Digit 14
+                                                                        x = (output % 26) + 0;
+                                                                        output = output / 26; // SPECIAL INPUT CHAR WHERE OUTPUT GETS LOWERED BY "/ 26" SEEMINGLY?
+                                                                        if (x != de) output = (output * 26) + (de + 10);
+
+                                                                        if (output == 0)
+                                                                        {
+                                                                            var serial = string.Join("", new int[] { d1, d2, d3, d4, d5, d6, d7, d8, d9, da, db, dc, dd, de });
+                                                                            Console.WriteLine("Found the answer! => {0}", serial);
+                                                                            return 0;
+                                                                        }
+                                                                    }
+
+                            }
+            }
+
+            return 0;
+        }
+    }
 }
-
-long i = 0;
-Console.WriteLine("Starting day 24 in csharp...");
-i = 13579246899999; Console.WriteLine($"{i} gives result {Run(i.ToString())}\n");
-
-i = 19894995792792; Console.WriteLine($"{i.ToString()} gives result 1: {Run(i.ToString())}");
-i = 29894995792792; Console.WriteLine($"{i.ToString()} gives result 2: {Run(i.ToString())}");
-i = 39894995793793; Console.WriteLine($"{i.ToString()} gives result 3: {Run(i.ToString())}");
-i = 49894995794794; Console.WriteLine($"{i.ToString()} gives result 4: {Run(i.ToString())}");
-i = 59894995795795; Console.WriteLine($"{i.ToString()} gives result 5: {Run(i.ToString())}");
-i = 69894995796796; Console.WriteLine($"{i.ToString()} gives result 6: {Run(i.ToString())}");
-i = 79894995797797; Console.WriteLine($"{i.ToString()} gives result 7: {Run(i.ToString())}");
-i = 89894995798798; Console.WriteLine($"{i.ToString()} gives result 8: {Run(i.ToString())}");
-i = 99894995799799; Console.WriteLine($"{i.ToString()} gives result 9: {Run(i.ToString())}");

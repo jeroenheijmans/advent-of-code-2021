@@ -610,10 +610,10 @@ function runProgram($program, $inputs) {
           break;
     }
 
-    $paddedVals = array_map(fn($x) => str_pad($x, 12, " ", STR_PAD_LEFT), array_values($memory));
-    $line = $program[$pos][0] . " " . $program[$pos][1] . " " . (array_key_exists(2, $program[$pos]) ? $program[$pos][2] : " ");
-    echo $program[$pos][0] === "inp" ? "\n" : "";
-    echo implode("", $paddedVals) . "           " . $line . "\n";
+    // $paddedVals = array_map(fn($x) => str_pad($x, 12, " ", STR_PAD_LEFT), array_values($memory));
+    // $line = $program[$pos][0] . " " . $program[$pos][1] . " " . (array_key_exists(2, $program[$pos]) ? $program[$pos][2] : " ");
+    // echo $program[$pos][0] === "inp" ? "\n" : "";
+    // echo implode("", $paddedVals) . "           " . $line . "\n";
 
     $pos++;
 
@@ -625,36 +625,8 @@ function runProgram($program, $inputs) {
   return $memory["z"];
 }
 
-echo runProgram($program, [1,3,5,7,9,2,4,6,8,9,9,9,9,9]);
+$part1 = runProgram($program, [1,3,1,6,1,1,5,1,1,3,9,6,1,7]);
+$part2 = runProgram($program, [1,3,1,6,1,1,5,1,1,3,9,6,1,7]);
 
-throw new Error('...');
-
-function solvePart1($program): int {
-
-  $inputs = 99999999999999;
-  $loop = 0;
-  $start = hrtime(true);
-
-  while (true) {
-    $inputs--;
-    $txt = "$inputs";
-    if (str_contains($txt,"0")) continue;
-    if (++$loop % 1000000 === 0) {
-      echo "Loop $loop time " . ((hrtime(true) - $start) / 1000000000) . " seconds next up MONAD $txt.\n";
-    }
-    $result = runDecompiledProgram(str_split($txt));
-    if ($result === 0) {
-      echo "Found result $inputs!\n";
-      return $inputs;
-    }
-  }
-
-  return -1;
-}
-
-function solvePart2($program): int {
-  return -1;
-}
-
-echo "Solution 1: " . solvePart1($program) . "\n";
-echo "Solution 2: " . solvePart2($program) . "\n";
+echo "Solution 1: 39494195799979, proof that it is valid = " . runProgram($program, [3,9,4,9,4,1,9,5,7,9,9,9,7,9]) . "\n";
+echo "Solution 2: 13161151139617, proof that it is valid = " . runProgram($program, [1,3,1,6,1,1,5,1,1,3,9,6,1,7]) . "\n";
