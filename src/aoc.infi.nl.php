@@ -27,6 +27,7 @@ Unobtanium: 83 IJzer, 89 Kryptonite
 
 $data = explode(PHP_EOL, trim($input));
 $rules = [];
+$partnames = [];
 foreach ($data as $line) {
   if (str_contains($line, "onderdelen")) continue;
   preg_match("/(\w+): (.+)/", $line, $matches);
@@ -35,29 +36,40 @@ foreach ($data as $line) {
   foreach ($parts as $part) {
     $tuple = explode(" ", $part);
     $rule[$tuple[1]] = $tuple[0];
+    array_push($partnames, $tuple[1]);
   }
   $rules[$matches[1]] = $rule;
 }
 
+function recursePartCount($part) {
+  global $rules;
+  if (!array_key_exists($part, $rules)) return 1;
+  $result = 0;
+  foreach ($rules[$part] as $key => $val) {
+    $result += recursePartCount($key) * $val;
+  }
+  return $result;
+}
+
 function solvePart1() {
   global $rules;
-
-  function recursePartCount($part) {
-    global $rules;
-    if (!array_key_exists($part, $rules)) return 1;
-    $result = 0;
-    foreach ($rules[$part] as $key => $val) {
-      $result += recursePartCount($key) * $val;
-    }
-    return $result;
-  }
-
   $totals = array_map(recursePartCount(...), array_keys($rules));
   return max($totals);
 }
 
 function solvePart2($missingPartsLine) {
-  
+  $missingParts = intval(explode(" ", $missingPartsLine)[0]);
+  global $rules, $partnames;
+
+  $totals = array_reduce(array_keys($rules), function($result, $current) {
+    global $partnames;
+    if (!in_array($current, $partnames)) $result[$current] = recursePartCount($current);
+    return $result;
+  }, array());
+
+  uasort($totals, fn($a, $b) => $a === $b ? 0 : ($a > $b ? 1 : -1));
+  print_r($totals);
+  echo "Looking to create 20 pieces of toys total worth $missingParts parts.\n";
 }
 
 
