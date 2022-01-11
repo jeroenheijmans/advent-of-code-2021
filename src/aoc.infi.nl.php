@@ -70,21 +70,27 @@ function solvePart2($missingPartsLine) {
 
   uasort($totals, fn($a, $b) => $a === $b ? 0 : ($a > $b ? -1 : 1));
   
-  function recurseComposition($partsToUse, &$totals, &$impossibles = [], $depth = 0) {
+  function recurseComposition($giftsToGo, $partsToUse, &$totals, &$impossibles = [], $depth = 0) {
     if (in_array($partsToUse, $impossibles)) return []; // on the cheap memoization
 
     foreach ($totals as $toy => $count) {
       if ($partsToUse % $count === 0) {
-        // We found it! The perfect way to use up all parts.
-        return [$toy => $partsToUse / $count];
+        $extraGifts = $partsToUse / $count;
+        if ($giftsToGo == $extraGifts)
+          // We found it! The perfect way to use up all parts.
+          return [$toy => $extraGifts];
       }
 
       if ($count <= $partsToUse) {
         $maxNrOFThisToy = intdiv($partsToUse, $count);
         for ($i = $maxNrOFThisToy; $i > 0; $i--) {
           if ($depth < 2) echo "  " . str_repeat("  ", $depth) . "Depth $depth, checking $toy x $i\n";
+
+          $newGiftsToGo = $giftsToGo - $i;
+          if ($newGiftsToGo <= 0) continue;
+
           $leftAfterThis = $partsToUse - ($i * $count);
-          $innerResult = recurseComposition($leftAfterThis, $totals, $impossibles, $depth + 1);
+          $innerResult = recurseComposition($newGiftsToGo, $leftAfterThis, $totals, $impossibles, $depth + 1);
           if (!empty($innerResult)) {
             $innerResult[$toy] = $i;
             return $innerResult;
@@ -98,9 +104,7 @@ function solvePart2($missingPartsLine) {
     return []; // not possible
   }
 
-  $result = recurseComposition($missingParts, $totals);
-
-  print_r($result);
+  $result = recurseComposition(20, $missingParts, $totals);
 
   return collect($result)
     ->keys()
@@ -108,7 +112,6 @@ function solvePart2($missingPartsLine) {
     ->sort()
     ->implode("");
 }
-
 
 echo "Solution 1: " . solvePart1() . "\n";
 echo "Solution 2: " . solvePart2($data[0]) . "\n";
