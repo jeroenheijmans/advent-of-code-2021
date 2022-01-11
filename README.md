@@ -43,6 +43,8 @@ Some learned lesson for each day:
 24. Reading low(er) level code is a skill apart.
 25. There's (an) order to things in life.
 
+And bonus lesson for [the Infi puzzle by my colleagues](https://aoc.infi.nl): it's never too late to have some fun puzzling and coding!
+
 ## Compendium Repositories
 
 I've created a browser extension for [Google Chrome](https://chrome.google.com/webstore/detail/ipbomkmbokofodhhjpipflmdplipblbe) and [Mozilla Firefox](https://addons.mozilla.org/en-US/firefox/addon/advent-of-code-charts/).
