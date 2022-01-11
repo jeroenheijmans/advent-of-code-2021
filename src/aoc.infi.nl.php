@@ -58,8 +58,9 @@ function solvePart1() {
 }
 
 function solvePart2($missingPartsLine) {
+  echo "Solution 2 processing...\n";
   $missingParts = intval(explode(" ", $missingPartsLine)[0]);
-  global $rules, $partnames;
+  global $rules;
 
   $totals = array_reduce(array_keys($rules), function($result, $current) {
     global $partnames;
@@ -67,9 +68,45 @@ function solvePart2($missingPartsLine) {
     return $result;
   }, array());
 
-  uasort($totals, fn($a, $b) => $a === $b ? 0 : ($a > $b ? 1 : -1));
-  print_r($totals);
-  echo "Looking to create 20 pieces of toys total worth $missingParts parts.\n";
+  uasort($totals, fn($a, $b) => $a === $b ? 0 : ($a > $b ? -1 : 1));
+  
+  function recurseComposition($partsToUse, &$totals, &$impossibles = [], $depth = 0) {
+    if (in_array($partsToUse, $impossibles)) return []; // on the cheap memoization
+
+    foreach ($totals as $toy => $count) {
+      if ($partsToUse % $count === 0) {
+        // We found it! The perfect way to use up all parts.
+        return [$toy => $partsToUse / $count];
+      }
+
+      if ($count <= $partsToUse) {
+        $maxNrOFThisToy = intdiv($partsToUse, $count);
+        for ($i = $maxNrOFThisToy; $i > 0; $i--) {
+          if ($depth < 2) echo "  " . str_repeat("  ", $depth) . "Depth $depth, checking $toy x $i\n";
+          $leftAfterThis = $partsToUse - ($i * $count);
+          $innerResult = recurseComposition($leftAfterThis, $totals, $impossibles, $depth + 1);
+          if (!empty($innerResult)) {
+            $innerResult[$toy] = $i;
+            return $innerResult;
+          }
+          // else: try less of this toy
+        }
+      }
+    }
+
+    array_push($impossibles, $partsToUse);
+    return []; // not possible
+  }
+
+  $result = recurseComposition($missingParts, $totals);
+
+  print_r($result);
+
+  return collect($result)
+    ->keys()
+    ->map(fn($key) => str_repeat(substr($key, 0, 1), $result[$key]))
+    ->sort()
+    ->implode("");
 }
 
 
